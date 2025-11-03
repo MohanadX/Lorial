@@ -31,13 +31,20 @@ BookingSchema.pre<BookingDocument>("save", async function (next) {
 	try {
 		// Validate email format
 		if (typeof this.email !== "string" || !EMAIL_RE.test(this.email)) {
-			throw new Error("Invalid email format");
+			// Attach a path-specific validation error so callers can inspect
+			// `err.errors.email` instead of receiving a generic error.
+			this.invalidate("email", "Invalid email format");
+			const ve = new mongoose.Error.ValidationError(this as any);
+			return next(ve);
 		}
 
 		// Verify that the referenced event exists
 		const exists = await EventModel.exists({ _id: this.eventId });
 		if (!exists) {
-			throw new Error("Referenced event does not exist");
+			// Attach a ValidatorError on the eventId path for consumers to inspect
+			this.invalidate("eventId", "Referenced event does not exist");
+			const ve = new mongoose.Error.ValidationError(this as any);
+			return next(ve);
 		}
 
 		next();
