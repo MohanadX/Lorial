@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import connectDB from "@/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Event from "@/database/event.model";
 
 // Define route params type for type safety
@@ -20,7 +20,7 @@ export async function GET(
 ): Promise<NextResponse> {
 	try {
 		// Connect to database
-		await connectDB();
+		await connectToDatabase();
 
 		// Await and extract slug from params
 		const { slug } = await params;
