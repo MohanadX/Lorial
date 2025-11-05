@@ -69,6 +69,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 			audience,
 			tags,
 			organizer,
+			_id,
 		},
 	} = await request.json();
 
@@ -146,7 +147,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 							<p className="text-sm">Be the first one to book your spot!</p>
 						)}
 
-						<BookEvent />
+						<BookEvent eventId={_id} slug={slug} />
 					</div>
 				</aside>
 			</div>
