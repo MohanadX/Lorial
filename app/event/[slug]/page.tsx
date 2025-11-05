@@ -1,7 +1,8 @@
 import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
-import { EventDocument } from "@/database/event.model";
+import EventModel, { EventDocument } from "@/database/event.model";
 import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
+import connectToDatabase from "@/lib/mongodb";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -53,25 +54,54 @@ const EventTags = ({ tags }: { tags: string[] }) => {
 const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const { slug } = await params;
 
-	const request = await fetch(`${BASE_URL}/api/events/${slug}`);
+	let eventData;
+	try {
+		// Connect to database
+		await connectToDatabase();
+
+		// Await and extract slug from params
+		const { slug } = await params;
+
+		// Validate slug parameter
+		if (!slug || typeof slug !== "string" || slug.trim() === "") {
+			throw new Error("Missing Event");
+		}
+
+		// Sanitize slug (remove any potential malicious input)
+		const sanitizedSlug = slug.trim().toLowerCase();
+
+		// Query events by slug
+		const event = await EventModel.findOne({ slug: sanitizedSlug }).lean();
+
+		// Serialize Mongo ObjectId and Dates
+		eventData = {
+			...event,
+			_id: event?._id.toString(),
+		};
+
+		// Handle events not found
+		if (!event) {
+			console.error("Event isn't found");
+		}
+	} catch (error) {
+		console.error(error);
+	}
 
 	const {
-		event: {
-			title,
-			description,
-			image,
-			overview,
-			date,
-			time,
-			location,
-			mode,
-			agenda,
-			audience,
-			tags,
-			organizer,
-			_id,
-		},
-	} = await request.json();
+		title,
+		description,
+		image,
+		overview,
+		date,
+		time,
+		location,
+		mode,
+		agenda,
+		audience,
+		tags,
+		organizer,
+		_id,
+	} = eventData;
 
 	if (!description) {
 		notFound();

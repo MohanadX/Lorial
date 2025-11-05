@@ -1,6 +1,8 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
+import { Event } from "@/database";
 import { EventDocument } from "@/database/event.model";
+import connectToDatabase from "@/lib/mongodb";
 import { cacheLife } from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -12,15 +14,16 @@ if (!BASE_URL) {
 const Home = async () => {
 	"use cache";
 	cacheLife("minutes");
-	const response = await fetch(`${BASE_URL}/api/events`);
 
-	if (!response.ok) {
-		throw new Error(
-			`Failed to fetch events: ${response.status} ${response.statusText}`
-		);
+	let events;
+	try {
+		await connectToDatabase();
+
+		events = await Event.find().sort({ createdAt: -1 }).lean(); // the newest will be first
+	} catch (error) {
+		console.error(error);
 	}
 
-	const { events } = await response.json();
 	return (
 		<>
 			<h1 className="text-center">
