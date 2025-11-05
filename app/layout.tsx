@@ -1,17 +1,41 @@
 import type { Metadata } from "next";
-import { Schibsted_Grotesk, Martian_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
 
-const SchibstedGrotesk = Schibsted_Grotesk({
+const SchibstedGrotesk = localFont({
+	src: [
+		{
+			path: "../public/fonts/schibsted-grotesk-latin-400-italic.woff2",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/schibsted-grotesk-latin-700-italic.woff2",
+			weight: "700",
+			style: "normal",
+		},
+	],
 	variable: "--font-schibsted-grotesk",
-	subsets: ["latin"],
+	display: "swap",
 });
 
-const MartianMono = Martian_Mono({
+const MartianMono = localFont({
+	src: [
+		{
+			path: "../public/fonts/MartianMono-Regular.woff2",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/MartianMono-Bold.woff2",
+			weight: "700",
+			style: "normal",
+		},
+	],
 	variable: "--font-martian-mono",
-	subsets: ["latin"],
+	display: "swap",
 });
 
 export const metadata: Metadata = {

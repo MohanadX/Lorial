@@ -1,0 +1,42 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+  environment = { NODE_VERSION = "20" } # Recommended for Next.js 16 runtime
+
+[[plugins]]
+  package = "@netlify/next"
+
+# -------------------------------------------------
+# ✅ Environment Variables
+# -------------------------------------------------
+[build.environment]
+  NEXT_PUBLIC_POSTHOG_KEY = "phc_xQ00vQRnTyva7QQuGeffmS6eK6KwxhdQMnWSkI1K10z"
+  NEXT_PUBLIC_POSTHOG_HOST = "https://us.i.posthog.com"
+  NEXT_PUBLIC_BASE_URL = "https://lorial.netlify.app"
+  MONGODB_URI = "mongodb+srv://Mohanad:Mohanados11@cluster0.dwyrgfq.mongodb.net/?appName=Cluster0"
+  IMAGEKIT_PUBLIC_KEY = "public_MJbtw5xSPCRpin71xCLRib3m33c="
+  IMAGEKIT_PRIVATE_KEY = "private_vWCfwJZ8JlfBC6QOyi8Lv4NFh0w="
+  IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/n0rxaa0i2"
+
+# -------------------------------------------------
+# ✅ Optional: Functions Settings (for ISR & Server Actions)
+# -------------------------------------------------
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["mongoose", "imagekit", "posthog-js"]
+  included_files = ["dist/**", "app/**", "lib/**"]
+
+# -------------------------------------------------
+# ✅ Caching and Redirect Rules
+# -------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Optional: redirect root domain → canonical domain
+[[redirects]]
+  from = "https://lorial.netlify.app/*"
+  to = "https://lorial.dev/:splat"
+  status = 301
+  force = true
