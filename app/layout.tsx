@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 		title: "Lorial – Developer Community Events Hub",
 		description:
 			"The Hub For every Developers events For better Development Future",
-		images: ["./favicon.ico"],
+		images: ["https://lorial.dev/favicon.ico"],
 		siteName: "Lorial",
 		type: "website",
 	},
