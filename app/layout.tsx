@@ -15,9 +15,35 @@ const MartianMono = Martian_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Lorial",
+	title: "Lorial – Developer Community Events Hub",
 	description:
 		"The Hub For every Developers events For better Development Future",
+	openGraph: {
+		title: "Lorial – Developer Community Events Hub",
+		description:
+			"The Hub For every Developers events For better Development Future",
+		images: ["./favicon.ico"],
+		siteName: "Lorial",
+		type: "website",
+	},
+	other: {
+		"application/ld+json": JSON.stringify({
+			"@context": "http://schema.org",
+			"@type": "WebSite",
+			name: "Lorial",
+			url: "https://lorial.dev",
+			description:
+				"A platform for developers to discover, share, and attend the latest developer community events.",
+			publisher: {
+				"@type": "Organization",
+				name: "Lorial",
+				logo: {
+					"@type": "ImageObject",
+					url: "https://lorial.dev/images/logo.png", // your logo URL
+				},
+			},
+		}),
+	},
 };
 
 export default function RootLayout({
