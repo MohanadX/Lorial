@@ -30,6 +30,24 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
+		// Validate file type
+		const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+		if (!allowedTypes.includes(file.type)) {
+			return NextResponse.json(
+				{ message: "Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed" },
+				{ status: 400 }
+			);
+		}
+
+		// Validate file size (e.g., max 5MB)
+		const maxSize = 5 * 1024 * 1024; // 5MB
+		if (file.size > maxSize) {
+			return NextResponse.json(
+				{ message: "File size exceeds 5MB limit" },
+				{ status: 400 }
+			);
+		}
+
 		// parse tags and agenda
 
 		const tags = JSON.parse(formData.get("tags") as string);
