@@ -15,6 +15,12 @@ export async function createBooking({
 	try {
 		await connectToDatabase();
 
+		// Check for duplicate booking
+		const existingBooking = await Booking.findOne({ eventId, email });
+		if (existingBooking) {
+			return { success: false, error: "You have already booked this event" };
+		}
+
 		await Booking.create({ eventId, slug, email });
 
 		// Convert Mongoose document to plain object
