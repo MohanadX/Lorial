@@ -3,6 +3,16 @@
 import { Booking } from "@/database";
 import connectToDatabase from "../mongodb";
 
+/**
+ * Create a booking record for an event.
+ *
+ * Establishes a database connection and persists a booking with the given event ID, slug, and email.
+ *
+ * @param eventId - The event's identifier (stringified ObjectId) to associate the booking with
+ * @param slug - The event's URL slug or unique human-readable identifier
+ * @param email - The booker's email address
+ * @returns An object with `success: true` if the booking was created, `success: false` otherwise
+ */
 export async function createBooking({
 	eventId,
 	slug,
