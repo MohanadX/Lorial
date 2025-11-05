@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
+	cacheComponents: true,
 	async rewrites() {
 		return [
 			{

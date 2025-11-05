@@ -104,6 +104,7 @@ const EventSchema = new Schema<EventDocument, Model<EventDocument>>(
 		slug: {
 			type: String,
 			required: true,
+			// Unique index on slug for fast lookups
 			unique: true,
 			trim: true,
 			default: function (this: Partial<EventDocument>) {
@@ -131,9 +132,6 @@ const EventSchema = new Schema<EventDocument, Model<EventDocument>>(
 		strict: true,
 	}
 );
-
-// Unique index on slug for fast lookups
-EventSchema.index({ slug: 1 }, { unique: true });
 
 // Pre-validate hook: generate/refresh slug before Mongoose runs validators
 // (required checks). We also normalize date and time here so validation sees

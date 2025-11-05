@@ -1,7 +1,10 @@
 import BookEvent from "@/components/BookEvent";
+import EventCard from "@/components/EventCard";
 import { EventDocument } from "@/database/event.model";
+import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -91,6 +94,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 						width={800}
 						height={800}
 						className="banner"
+						priority
 					/>
 
 					<section className="flex-col gap-2">
@@ -146,8 +150,62 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 					</div>
 				</aside>
 			</div>
+
+			<Suspense fallback={<SkeletonCardRow />}>
+				<SimilarEventsRen slug={slug} />
+			</Suspense>
 		</section>
 	);
 };
+
+async function SimilarEventsRen({ slug }: { slug: string }) {
+	const similarEvents = await getSimilarEventBySlug(slug);
+	return (
+		<div className="flex flex-col w-full gap-4 pt-20">
+			<h2>Similar Events</h2>
+			<div className="events">
+				{similarEvents.length > 0 &&
+					similarEvents.map((similarEvent) => (
+						<EventCard
+							key={similarEvent.title!}
+							{...(similarEvent as EventDocument)}
+						/>
+					))}
+			</div>
+		</div>
+	);
+}
+
+function SkeletonCardRow() {
+	return (
+		<div className="flex gap-4">
+			{Array(3)
+				.fill(0)
+				.map((_, i) => (
+					<SkeletonCard key={i} />
+				))}
+		</div>
+	);
+}
+
+function SkeletonCard() {
+	return (
+		<div
+			className="bg-gray-200 rounded-xl animate-pulse"
+			style={{
+				height: "423.044px",
+				width: "288.009px",
+			}}
+		>
+			{/* Optional: inner skeleton elements */}
+			<div className="h-48 bg-gray-300 rounded-t-xl w-full"></div>
+			<div className="p-4">
+				<div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+				<div className="h-4 bg-gray-300 rounded w-full"></div>
+				<div className="h-4 bg-gray-300 rounded w-5/6 mt-1"></div>
+			</div>
+		</div>
+	);
+}
 
 export default Event;
