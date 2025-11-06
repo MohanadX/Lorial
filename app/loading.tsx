@@ -1,4 +1,4 @@
-// / app/loading.tsx (server component)
+// app/loading.tsx (server component)
 
 import DynamicLoading from "@/components/DynamicLoading";
 
