@@ -70,12 +70,6 @@ export const metadata: Metadata = {
 	},
 };
 
-/**
- * Provides the application's root HTML layout including global fonts, navigation, decorative background, and a main content container.
- *
- * @param children - Content to render inside the layout's main element
- * @returns The root HTML structure for pages, containing <html lang="en">, <body> with global font classes, the Navbar, decorative light rays background, and a <main> wrapper for `children`
- */
 export default function RootLayout({
 	children,
 }: Readonly<{
