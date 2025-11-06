@@ -2,7 +2,6 @@
 
 import DynamicLoading from "@/components/DynamicLoading";
 
-export default function Loading() {
 
 export default function Loading() {
 	return (
