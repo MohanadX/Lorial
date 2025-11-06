@@ -3,6 +3,8 @@ import ExploreBtn from "@/components/ExploreBtn";
 import { EventDocument } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 
+export const dynamic = "force-dynamic";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 if (!BASE_URL) {
