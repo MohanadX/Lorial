@@ -22,11 +22,3 @@
   node_bundler = "esbuild"
   external_node_modules = ["mongoose", "imagekit", "posthog-js"]
   included_files = ["dist/**", "app/**", "lib/**"]
-
-# -------------------------------------------------
-# Caching and Redirect Rules
-# -------------------------------------------------
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
