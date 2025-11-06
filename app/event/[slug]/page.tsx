@@ -53,7 +53,7 @@ const EventTags = ({ tags }: { tags: string[] }) => {
 const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const { slug } = await params;
 
-	const request = await fetch(`${BASE_URL}/api/events/${slug}`);
+	const request = await fetch(`https://lorial.netlify.app//api/events/${slug}`);
 
 	const {
 		event: {
