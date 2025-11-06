@@ -1,4 +1,4 @@
-// app/DynamicLoading.tsx (client component)
+// components/DynamicLoading.tsx (client component)
 "use client";
 import { useEffect, useState } from "react";
 
