@@ -30,9 +30,3 @@
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-[[redirects]]
-  from = "https://lorial.netlify.app/*"
-  to = "https://lorial.dev/:splat"
-  status = 301
-  force = true
