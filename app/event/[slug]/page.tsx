@@ -6,7 +6,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export const dynamic = "force-dynamic";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -55,7 +54,7 @@ const EventTags = ({ tags }: { tags: string[] }) => {
 const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const { slug } = await params;
 
-	const request = await fetch(`https://lorial.netlify.app/api/events/${slug}`);
+	const request = await fetch(`/api/events/${slug}`);
 
 	const {
 		event: {
