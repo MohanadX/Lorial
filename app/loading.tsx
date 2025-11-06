@@ -2,7 +2,7 @@
 
 import DynamicLoading from "@/components/DynamicLoading";
 
-export const dynamic = "force-static";
+export default function Loading() {
 
 export default function Loading() {
 	return (
