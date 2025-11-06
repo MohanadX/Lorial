@@ -11,9 +11,9 @@ if (!BASE_URL) {
 }
 
 const Home = async () => {
-	"use cache: remote";
+	// "use cache: remote";
 	cacheLife("minutes");
-	const response = await fetch(`/api/events`);
+	const response = await fetch(`https://lorial.netlify.app/api/events`);
 
 	if (!response.ok) {
 		throw new Error(
