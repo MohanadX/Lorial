@@ -3,7 +3,6 @@ import ExploreBtn from "@/components/ExploreBtn";
 import { EventDocument } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 
-
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 if (!BASE_URL) {
@@ -33,7 +32,7 @@ const Home = async () => {
 			<ExploreBtn />
 			<div className="mt-20 space-y-7">
 				<h2>Featured Events</h2>
-				<ul className="events list-none">
+				<ul className="events list-none" id="events">
 					{events &&
 						events.length > 0 &&
 						events.map((event: EventDocument) => (
