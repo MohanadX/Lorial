@@ -3,6 +3,7 @@ import ExploreBtn from "@/components/ExploreBtn";
 import { EventDocument } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 if (!BASE_URL) {
@@ -12,7 +13,7 @@ if (!BASE_URL) {
 const Home = async () => {
 	"use cache: remote";
 	cacheLife("minutes");
-	const response = await fetch(`${BASE_URL}/api/events`);
+	const response = await fetch(`https://lorial.netlify.app/api/events`);
 
 	if (!response.ok) {
 		throw new Error(
