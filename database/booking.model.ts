@@ -1,6 +1,7 @@
 import { mongoose } from "../lib/mongodb";
 import type { Document, Model, Types } from "mongoose";
-import { EventModel } from "./event.model";
+import { EventData, EventModel } from "./event.model";
+import sendBookingEmail from "@/lib/actions/booking.actions";
 
 const { Schema } = mongoose;
 
@@ -12,10 +13,13 @@ export interface BookingDocument extends Document {
 	updatedAt: Date;
 }
 
-const BookingSchema = new Schema<BookingDocument, Model<BookingDocument>>({
-	eventId: { type: Schema.Types.ObjectId, ref: "Event", required: true },
-	email: { type: String, required: true, trim: true },
-},{ timestamps: true, strict: true });
+const BookingSchema = new Schema<BookingDocument, Model<BookingDocument>>(
+	{
+		eventId: { type: Schema.Types.ObjectId, ref: "Event", required: true },
+		email: { type: String, required: true, trim: true },
+	},
+	{ timestamps: true, strict: true }
+);
 
 // Index eventId for faster lookups when querying bookings by event
 BookingSchema.index({ eventId: 1 });
@@ -29,9 +33,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 BookingSchema.pre<BookingDocument>("save", async function () {
 	// Validate email format
 	if (typeof this.email !== "string" || !EMAIL_RE.test(this.email)) {
-		throw new mongoose.Error.ValidationError(
-			new Error("Invalid email format")
-		);
+		throw new mongoose.Error.ValidationError(new Error("Invalid email format"));
 	}
 
 	// Verify that the referenced event exists
@@ -40,6 +42,25 @@ BookingSchema.pre<BookingDocument>("save", async function () {
 		throw new mongoose.Error.ValidationError(
 			new Error("Referenced event does not exist")
 		);
+	}
+});
+
+BookingSchema.post<BookingDocument>("save", async function (doc) {
+	try {
+		// Populate event info
+		const event = await EventModel.findById(doc.eventId).lean<EventData>();
+		if (!event) return; // Defensive: event deleted between validation and save
+
+		// Increment the booking counter
+		await EventModel.updateOne({ _id: doc.eventId }, { $inc: { bookings: 1 } });
+
+		// Send the confirmation email
+		await sendBookingEmail({
+			to: doc.email,
+			event,
+		});
+	} catch (err) {
+		console.error("Failed to send booking email:", err);
 	}
 });
 

@@ -2,6 +2,8 @@
 
 import { Booking } from "@/database";
 import connectToDatabase from "../mongodb";
+import { Resend } from "resend";
+import z from "zod";
 
 /**
  * Create a booking record for an event.
@@ -13,6 +15,10 @@ import connectToDatabase from "../mongodb";
  * @param email - The booker's email address
  * @returns An object with `success: true` if the booking was created, `success: false` otherwise
  */
+
+const emailSchema = z.object({
+	email: z.email(),
+});
 export async function createBooking({
 	eventId,
 	slug,
@@ -25,6 +31,13 @@ export async function createBooking({
 	try {
 		await connectToDatabase();
 
+		const validation = emailSchema.safeParse({
+			email,
+		});
+
+		if (!validation.success) {
+			return { success: false, error: "Please enter a valid email address" };
+		}
 		// Check for duplicate booking
 		const existingBooking = await Booking.findOne({ eventId, email });
 		if (existingBooking) {
@@ -58,3 +71,48 @@ _id is a MongoDB ObjectId, which is an object with a buffer inside.
 Next.js cannot send that to the browser; it only supports plain JSON-serializable values.
 // Serialize for Next.js Client Components
 */
+
+// utils/sendBookingEmail.ts
+
+if (!process.env.RESEND_API_KEY) {
+  throw new Error("RESEND_API_KEY environment variable is not set");
+}
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+interface SendBookingEmailParams {
+	to: string;
+	event: {
+		title: string;
+		date: string;
+		time: string;
+		venue: string;
+		location: string;
+		image?: string;
+		slug: string;
+	};
+}
+
+export default async function sendBookingEmail({
+	to,
+	event,
+}: SendBookingEmailParams) {
+	const subject = `Your booking for ${event.title}`;
+	const formattedDate = event.date;
+	const body = `
+		<h2>You're booked for <strong>${event.title}</strong>!</h2>
+		<p>📅 <strong>Date:</strong> ${formattedDate}</p>
+		<p>🕒 <strong>Time:</strong> ${event.time}</p>
+		<p>📍 <strong>Venue:</strong> ${event.venue} (${event.location})</p>
+		<p>We look forward to seeing you!</p>
+		<hr/>
+		<p>If you have questions, reply to this email.</p>
+	`;
+
+	await resend.emails.send({
+		from: "events@lorial.com",
+		to,
+		subject,
+		html: body,
+	});
+}

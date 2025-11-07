@@ -21,8 +21,8 @@ import type { Document, Model, Query, UpdateQuery } from "mongoose";
 
 const { Schema } = mongoose;
 
-// Strongly-typed Event document interface
-export interface EventDocument extends Document {
+export interface EventData {
+	_id: string;
 	title: string;
 	slug: string;
 	description: string;
@@ -37,9 +37,23 @@ export interface EventDocument extends Document {
 	agenda: string[];
 	organizer: string;
 	tags: string[];
+	bookings: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
+
+// Strongly-typed Event document interface
+export interface EventDocument extends EventData, Document {
+	_id: string;
+}
+
+/*
+EventData: A plain TypeScript interface describing the shape of an Event.
+This is for data usage, especially when using .lean() queries that return plain objects.
+EventDocument: Extends both EventData and Document → represents a Mongoose document.
+This is what you get when you call .findOne() or .create().
+_id: string: Overriding Mongoose’s default _id (usually ObjectId) to a string for easier TypeScript handling.
+*/
 
 // Lightweight helper: create a URL-friendly slug from a title.
 // Uses a conservative character whitelist (a-z0-9) and replaces other
@@ -48,8 +62,8 @@ function generateSlug(title: string): string {
 	return title
 		.toLowerCase()
 		.trim()
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-+|-+$/g, "");
+		.replace(/[^a-z0-9]+/g, "-") //Replaces non-alphanumeric characters with hyphens.
+		.replace(/^-+|-+$/g, ""); // Removes leading/trailing hyphens.
 }
 
 // Normalize time strings into HH:mm (24h) format.
@@ -126,6 +140,12 @@ const EventSchema = new Schema<EventDocument, Model<EventDocument>>(
 		agenda: { type: [String], required: true },
 		organizer: { type: String, required: true, trim: true },
 		tags: { type: [String], required: true },
+		bookings: {
+			type: Number,
+			required: true,
+			default: 0,
+			min: 0, // Optional safeguard: prevent negative numbers
+		},
 	},
 	{
 		timestamps: true,
@@ -140,6 +160,11 @@ const EventSchema = new Schema<EventDocument, Model<EventDocument>>(
 // right place to derive computed values (like `slug`) and normalize inputs so
 // the validators operate on consistent data.
 EventSchema.pre<EventDocument>("validate", function (next) {
+	/*
+	Role of next:
+		next() tells Mongoose: “I’m done, go ahead with the next middleware or the validation process.”
+		next(err) tells Mongoose: “Stop, there’s an error — treat this as a ValidationError.”
+	*/
 	try {
 		// Ensure required string fields are non-empty. We perform this check
 		// here to return a clear error message, however Mongoose's `required`

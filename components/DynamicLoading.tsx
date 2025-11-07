@@ -9,7 +9,7 @@ export default function DynamicLoading() {
 		return () => clearInterval(interval);
 	}, []);
 	return (
-		<p className="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300">
+		<p className="mt-4 text-lg font-medium text-white dark:text-gray-300">
 			Loading{".".repeat(dots)}
 		</p>
 	);

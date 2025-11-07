@@ -2,6 +2,7 @@ import { Event } from "@/database";
 import imagekit from "@/lib/imagekit";
 import connectToDatabase from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 
 export async function POST(req: NextRequest) {
 	try {
@@ -34,7 +35,10 @@ export async function POST(req: NextRequest) {
 		const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 		if (!allowedTypes.includes(file.type)) {
 			return NextResponse.json(
-				{ message: "Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed" },
+				{
+					message:
+						"Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed",
+				},
 				{ status: 400 }
 			);
 		}
@@ -56,6 +60,27 @@ export async function POST(req: NextRequest) {
 		// Convert file to buffer
 		const arrayBuffer = await file.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
+
+		// Check image resolution using Sharp
+		const metadata = await sharp(buffer).metadata();
+		const minWidth = 1200;
+		const minHeight = 800;
+
+		if (!metadata.width || !metadata.height) {
+			return NextResponse.json(
+				{ message: "Unable to read image dimensions" },
+				{ status: 400 }
+			);
+		}
+
+		if (metadata.width < minWidth || metadata.height < minHeight) {
+			return NextResponse.json(
+				{
+					message: `Image resolution too small. Minimum: ${minWidth}x${minHeight}px`,
+				},
+				{ status: 400 }
+			);
+		}
 
 		// Upload image to ImageKit
 		const uploadResult = await imagekit.upload({
