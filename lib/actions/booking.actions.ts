@@ -74,6 +74,10 @@ Next.js cannot send that to the browser; it only supports plain JSON-serializabl
 
 // utils/sendBookingEmail.ts
 
+if (!process.env.RESEND_API_KEY) {
+  throw new Error("RESEND_API_KEY environment variable is not set");
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface SendBookingEmailParams {
