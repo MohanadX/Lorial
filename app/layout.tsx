@@ -42,20 +42,43 @@ export const metadata: Metadata = {
 	title: "Lorial – Developer Community Events Hub",
 	description:
 		"The Hub For every Developers events For better Development Future",
+	keywords: [
+		"developer events",
+		"tech conferences",
+		"developer meetups",
+		"Lorial",
+		"software community",
+		"frontend",
+		"AI",
+		"DevOps",
+		"Kubernetes",
+	],
 	openGraph: {
 		title: "Lorial – Developer Community Events Hub",
 		description:
 			"The Hub For every Developers events For better Development Future",
-		images: ["https://lorial.dev/favicon.ico"],
+		images: ["https://lorial.netlify.app/favicon.ico"],
 		siteName: "Lorial",
+		url: "https://lorial.netlify.app",
 		type: "website",
+	},
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-snippet": -1,
+			"max-image-preview": "large",
+			"max-video-preview": -1,
+		},
 	},
 	other: {
 		"application/ld+json": JSON.stringify({
 			"@context": "http://schema.org",
 			"@type": "WebSite",
 			name: "Lorial",
-			url: "https://lorial.dev",
+			url: "https://lorial.netlify.app",
 			description:
 				"A platform for developers to discover, share, and attend the latest developer community events.",
 			publisher: {
@@ -63,7 +86,7 @@ export const metadata: Metadata = {
 				name: "Lorial",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://lorial.dev/images/logo.png", // your logo URL
+					url: "https://lorial.netlify.app/favicon.ico", // your logo URL
 				},
 			},
 		}),
