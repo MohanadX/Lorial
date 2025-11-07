@@ -69,6 +69,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 			audience,
 			tags,
 			organizer,
+			bookings,
 			_id,
 		},
 	} = await request.json();
@@ -76,8 +77,6 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	if (!description) {
 		notFound();
 	}
-
-	const bookings = 10;
 
 	return (
 		<section id="event">
