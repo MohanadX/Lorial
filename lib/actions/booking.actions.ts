@@ -104,12 +104,26 @@ function escapeHtml(text: string): string {
 	return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
+/**
+ * Build a safe event URL on site using the slug.
+ * Using encodeURIComponent prevents injection via the slug.
+ */
+function buildEventUrl(slug: string) {
+	const base = "https://lorial.netlify.app"; // <- change site uses another base
+	const safeSlug = encodeURIComponent(slug || "");
+	return `${base}/events/${safeSlug}`;
+}
+
 export default async function sendBookingEmail({
 	to,
 	event,
 }: SendBookingEmailParams) {
 	const subject = `Your booking for ${escapeHtml(event.title)}`;
 	const formattedDate = event.date;
+
+	// build safe URL and escape for HTML attribute (href)
+	const eventUrl = buildEventUrl(event.slug);
+	const escapedUrl = escapeHtml(eventUrl);
 	const body = `
 		<h2>You're booked for <strong>${escapeHtml(event.title)}</strong>!</h2>
 		${
@@ -119,6 +133,17 @@ export default async function sendBookingEmail({
 				  )}" style="max-width:100%;height:auto;margin-bottom:16px;" />`
 				: ""
 		}
+		<!-- CTA button -->
+			<p style="margin:18px 0;">
+				<a
+					href="${escapedUrl}"
+					target="_blank"
+					rel="noopener noreferrer"
+					style="display:inline-block;padding:10px 18px;background:#2563eb;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;"
+				>
+					View event details
+				</a>
+			</p>
     <p>📅 <strong>Date:</strong> ${escapeHtml(formattedDate)}</p>
     <p>🕒 <strong>Time:</strong> ${escapeHtml(event.time)}</p>
     <p>📍 <strong>Venue:</strong> ${escapeHtml(event.venue)} (${escapeHtml(
@@ -140,3 +165,8 @@ export default async function sendBookingEmail({
 		console.error("Failed to send booking email", error);
 	}
 }
+
+/*
+noopener → prevents the opened page from controlling your tab.
+noreferrer → also hides the HTTP “referrer” header (so the new page doesn’t see your URL or query params).
+*/
