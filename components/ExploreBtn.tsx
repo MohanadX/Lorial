@@ -8,17 +8,19 @@ const ExploreBtn = () => {
 			type="button"
 			id="explore-btn"
 			className="mt-7"
-			onClick={() => console.log("Clicked")}
+			onClick={() =>
+				document
+					.getElementById("events")
+					?.scrollIntoView({ behavior: "smooth" })
+			}
 		>
-			<a href="#events">
-				Explore Events
-				<Image
-					src={"/icons/arrow-down.svg"}
-					alt="arrow-down"
-					width={24}
-					height={24}
-				/>
-			</a>
+			Explore Events
+			<Image
+				src={"/icons/arrow-down.svg"}
+				alt="arrow-down"
+				width={24}
+				height={24}
+			/>
 		</button>
 	);
 };

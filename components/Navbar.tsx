@@ -10,7 +10,7 @@ const Navbar = () => {
 					<p>Lorial</p>
 				</Link>
 
-				<ul>
+				<ul className="list-none">
 					<li>
 						<Link href={"/"}>Home</Link>
 					</li>
