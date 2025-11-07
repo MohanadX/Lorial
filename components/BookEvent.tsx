@@ -38,6 +38,7 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="Enter Your Email Address"
 							id="email"
+							required
 						/>
 
 						{error && (

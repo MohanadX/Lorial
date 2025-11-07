@@ -75,7 +75,7 @@ Next.js cannot send that to the browser; it only supports plain JSON-serializabl
 // utils/sendBookingEmail.ts
 
 if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY environment variable is not set");
+	throw new Error("RESEND_API_KEY environment variable is not set");
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -93,6 +93,17 @@ interface SendBookingEmailParams {
 	};
 }
 
+function escapeHtml(text: string): string {
+	const map: Record<string, string> = {
+		"&": "&amp;",
+		"<": "&lt;",
+		">": "&gt;",
+		'"': "&quot;",
+		"'": "&#039;",
+	};
+	return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 export default async function sendBookingEmail({
 	to,
 	event,
@@ -100,10 +111,12 @@ export default async function sendBookingEmail({
 	const subject = `Your booking for ${event.title}`;
 	const formattedDate = event.date;
 	const body = `
-		<h2>You're booked for <strong>${event.title}</strong>!</h2>
-		<p>📅 <strong>Date:</strong> ${formattedDate}</p>
-		<p>🕒 <strong>Time:</strong> ${event.time}</p>
-		<p>📍 <strong>Venue:</strong> ${event.venue} (${event.location})</p>
+		<h2>You're booked for <strong>${escapeHtml(event.title)}</strong>!</h2>
+		<p>📅 <strong>Date:</strong> ${escapeHtml(formattedDate)}</p>
+		<p>🕒 <strong>Time:</strong> ${escapeHtml(event.time)}</p>
+		<p>📍 <strong>Venue:</strong> ${escapeHtml(event.venue)} (${escapeHtml(
+		event.location
+	)})</p>
 		<p>We look forward to seeing you!</p>
 		<hr/>
 		<p>If you have questions, reply to this email.</p>
