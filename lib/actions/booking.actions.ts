@@ -2,7 +2,7 @@
 
 import { Booking } from "@/database";
 import connectToDatabase from "../mongodb";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import z from "zod";
 
 /**
@@ -72,13 +72,7 @@ Next.js cannot send that to the browser; it only supports plain JSON-serializabl
 // Serialize for Next.js Client Components
 */
 
-// utils/sendBookingEmail.ts
-
-if (!process.env.RESEND_API_KEY) {
-	throw new Error("RESEND_API_KEY environment variable is not set");
-}
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+// sendBookingEmail.ts
 
 interface SendBookingEmailParams {
 	to: string;
@@ -114,6 +108,15 @@ function buildEventUrl(slug: string) {
 	return `${base}/event/${safeSlug}`;
 }
 
+// Configure your SMTP transporter
+const transporter = nodemailer.createTransport({
+	service: "gmail", // or "hotmail", "yahoo", etc.
+	auth: {
+		user: process.env.EMAIL_USER, // your email address
+		pass: process.env.EMAIL_PASS, // app password (Gmail)
+	},
+});
+
 export default async function sendBookingEmail({
 	to,
 	event,
@@ -125,6 +128,7 @@ export default async function sendBookingEmail({
 	const eventUrl = buildEventUrl(event.slug);
 	const escapedUrl = escapeHtml(eventUrl);
 	const body = `
+		<h1>From Lorial app</h1>
 		<h2>You're booked for <strong>${escapeHtml(event.title)}</strong>!</h2>
 		${
 			event.image
@@ -155,12 +159,13 @@ export default async function sendBookingEmail({
 `;
 
 	try {
-		await resend.emails.send({
-			from: "lorial@resend.dev",
+		const info = await transporter.sendMail({
+			from: process.env.EMAIL_USER, // must match your SMTP user
 			to,
 			subject,
 			html: body,
 		});
+		console.log("Email sent successfully:", info.messageId);
 	} catch (error) {
 		console.error("Failed to send booking email", error);
 	}
