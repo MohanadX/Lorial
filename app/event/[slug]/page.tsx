@@ -6,7 +6,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const EventDetailsItem = ({
@@ -177,7 +176,7 @@ async function SimilarEventsRen({ slug }: { slug: string }) {
 	);
 }
 
-function SkeletonCardRow() {
+export function SkeletonCardRow() {
 	return (
 		<div className="flex gap-4">
 			{Array(3)
