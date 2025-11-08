@@ -12,8 +12,8 @@ if (!BASE_URL) {
 }
 
 const EventsList = async () => {
-	// "use cache: remote";
-	// cacheLife("minutes");
+	"use cache: remote";
+	cacheLife("minutes");
 
 	const response = await fetch(`${BASE_URL}/api/events`);
 
