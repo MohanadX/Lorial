@@ -111,7 +111,7 @@ function escapeHtml(text: string): string {
 function buildEventUrl(slug: string) {
 	const base = "https://lorial.netlify.app"; // <- change site uses another base
 	const safeSlug = encodeURIComponent(slug || "");
-	return `${base}/events/${safeSlug}`;
+	return `${base}/event/${safeSlug}`;
 }
 
 export default async function sendBookingEmail({
