@@ -156,7 +156,7 @@ export default async function sendBookingEmail({
 
 	try {
 		await resend.emails.send({
-			from: "events@lorial.com",
+			from: "lorial@resend.dev",
 			to,
 			subject,
 			html: body,
