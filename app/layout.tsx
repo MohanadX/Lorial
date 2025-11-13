@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
+import { Suspense } from "react";
+import Loader from "@/components/Loader";
 
 const SchibstedGrotesk = localFont({
 	src: [
@@ -103,7 +105,9 @@ export default function RootLayout({
 			<body
 				className={`${SchibstedGrotesk.variable} ${MartianMono.variable} min-h-screen antialiased`}
 			>
-				<Navbar />
+				<Suspense fallback={<Loader type="navbar" />}>
+					<Navbar />
+				</Suspense>
 				<div className="absolute inset-0 top-0 z-[-1] min-h-screen">
 					<LightRays
 						raysOrigin="top-center-offset"
