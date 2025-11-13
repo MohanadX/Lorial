@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
 		// find user
 		await connectToDatabase();
-		const user = await UserModel.findById({ _id: sanitizedId });
+		const user = await UserModel.findById(sanitizedId);
 
 		if (!user) {
 			return NextResponse.json(
