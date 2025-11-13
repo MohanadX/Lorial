@@ -40,7 +40,7 @@ const EditProfileInput = ({ dataType }: { dataType: "name" | "image" }) => {
 				});
 			})();
 		}
-	}, [state.success, state.data, session, update]);
+	}, [state.success, state.data, update]);
 
 	return (
 		<form
