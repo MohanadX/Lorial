@@ -14,7 +14,7 @@ export default function Sidebar() {
 	const menuItems = [
 		{
 			label: "Edit Profile",
-			href: `${pathname}/${userId}/`,
+			href: `/user/${userId}`,
 			icon: <FaUserEdit />,
 		},
 		// {
