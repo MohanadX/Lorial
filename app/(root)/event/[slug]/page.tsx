@@ -178,7 +178,7 @@ async function SimilarEventsRen({ slug }: { slug: string }) {
 
 export function SkeletonCardRow() {
 	return (
-		<div className="grid md:grid-cols-3 gap-10 sm:grid-cols-2 grid-cols-1">
+		<div className="card-rows">
 			{Array(3)
 				.fill(0)
 				.map((_, i) => (

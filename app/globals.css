@@ -275,3 +275,8 @@
 .change {
 	@apply bg-primary hover:bg-primary/90 flex cursor-pointer items-center justify-center rounded-[6px] px-2 py-2 text-lg font-semibold text-black;
 }
+
+.card-rows {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
