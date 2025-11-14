@@ -1,7 +1,14 @@
+import { auth } from "@/auth";
+
 import Image from "next/image";
 import Link from "next/link";
 
-const Navbar = () => {
+export const dynamic = "force-dynamic";
+
+const Navbar = async () => {
+	const session = await auth();
+
+	console.log(session);
 	return (
 		<header>
 			<nav>
@@ -16,6 +23,22 @@ const Navbar = () => {
 					</li>
 					<li>
 						<Link href={"/"}>Events</Link>
+					</li>
+					<li>
+						{session ? (
+							<Link href={`/user/${session.user.id}`}>
+								<Image
+									src={session.user?.image ?? "/icons/avatar-placeholder.png"}
+									alt={session.user?.name ?? "User profile"}
+									width={48}
+									height={48}
+									className="rounded-full"
+								/>
+							</Link>
+							</Link>
+						) : (
+							<Link href={"/login"}>Login</Link>
+						)}
 					</li>
 				</ul>
 			</nav>

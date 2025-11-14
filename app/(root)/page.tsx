@@ -3,9 +3,10 @@ import ExploreBtn from "@/components/ExploreBtn";
 import { EventDocument } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
-import { SkeletonCardRow } from "../event/[slug]/page";
+import { SkeletonCardRow } from "./event/[slug]/page";
+import LoginToast from "@/components/LoginToast";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.BASE_URL;
 
 if (!BASE_URL) {
 	throw new Error("NEXT_PUBLIC_BASE_URL environment variable is not defined");
@@ -37,7 +38,13 @@ const EventsList = async () => {
 	);
 };
 
-const Home = () => {
+const Home = async ({
+	searchParams,
+}: {
+	searchParams: Promise<{ login?: string; logout?: string }>;
+}) => {
+	const { login, logout } = await searchParams;
+
 	return (
 		<>
 			<h1 className="text-center">
@@ -55,6 +62,8 @@ const Home = () => {
 					<EventsList />
 				</Suspense>
 			</div>
+			{login && <LoginToast login={login} />}
+			{logout && <LoginToast logout={logout} />}
 		</>
 	);
 };

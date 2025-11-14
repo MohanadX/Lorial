@@ -1,28 +1,52 @@
 "use client";
 
 import { createBooking } from "@/lib/actions/booking.actions";
+import clsx from "clsx";
+import { useSession } from "next-auth/react";
 import posthog from "posthog-js";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+
+// Memoized toast loader to avoid repeated imports
+let toastModule: typeof import("sonner") | null = null;
+
+const getToast = async () => {
+	if (!toastModule) {
+		toastModule = await import("sonner");
+	}
+	return toastModule.toast;
+};
 
 const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 	const [email, setEmail] = useState<string>("");
 	const [submitted, setSubmitted] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
+	const [isPending, startTransition] = useTransition(); // for tracking async function like mine as it is non-blocking update
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const { success, error } = await createBooking({ eventId, slug, email });
+		startTransition(async () => {
+			const { success, error } = await createBooking({
+				eventId,
+				slug,
+				email: email || (session?.user.email as string),
+			});
 
-		if (success) {
-			setSubmitted(true);
-			posthog.capture("event_booked", { eventId, slug, email });
-		} else {
-			setError(error || "Booking Creation Failed");
-			console.error("Booking Creation Failed");
-			posthog.captureException("Booking Creation Failed");
-		}
+			const toast = await getToast();
+			if (success) {
+				setSubmitted(true);
+				toast.success("🎉 Your booking is done successfully");
+				posthog.capture("event_booked", { eventId, slug, email });
+			} else {
+				setError(error || "Booking Creation Failed");
+				console.error("Booking Creation Failed");
+				toast.error("Your booking creation has been failed");
+				posthog.captureException("Booking Creation Failed");
+			}
+		});
 	};
+
+	const { data: session } = useSession();
 
 	return (
 		<div id="book-event">
@@ -31,21 +55,36 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 			) : (
 				<form onSubmit={handleSubmit}>
 					<div>
-						<label htmlFor="email">Email Address</label>
-						<input
-							type="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							placeholder="Enter Your Email Address"
-							id="email"
-						/>
-
+						{session?.user ? (
+							<p>
+								Book This Event with your email on our website, don't this this
+								chance
+							</p>
+						) : (
+							<>
+								<label htmlFor="email">Email Address</label>
+								<input
+									type="email"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+									placeholder="Enter Your Email Address"
+									id="email"
+								/>
+							</>
+						)}
+						<button
+							type="submit"
+							className={clsx(
+								"button-submit",
+								isPending ? "bg-primary/90" : ""
+							)}
+							disabled={isPending}
+						>
+							{isPending ? "Booking..." : "Submit"}
+						</button>
 						{error && (
 							<p className="text-red-600 text-sm mt-1">{error}</p> // <-- display error
 						)}
-						<button type="submit" className="button-submit">
-							Submit
-						</button>
 					</div>
 				</form>
 			)}
