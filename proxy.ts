@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 
 export const config = {
@@ -8,8 +8,8 @@ export const config = {
 export default async function proxy(req: NextRequest) {
 	const isLogged = await auth();
 	if (req.nextUrl.pathname.startsWith("/create/event") && !isLogged) {
-		return Response.redirect("/");
+		return NextResponse.redirect(new URL("/", req.url));
 	}
 	// Authentication passed — continue request
-	return true;
+	return NextResponse.next();
 }

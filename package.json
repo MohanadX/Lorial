@@ -37,7 +37,6 @@
     "@netlify/next": "^1.4.9",
     "@netlify/plugin-nextjs": "^5.14.5",
     "@tailwindcss/postcss": "^4",
-    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.3",
     "@types/react": "^19",

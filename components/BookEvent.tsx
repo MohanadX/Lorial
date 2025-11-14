@@ -20,12 +20,14 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 	const [email, setEmail] = useState<string>("");
 	const [submitted, setSubmitted] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
-	const [isPending, startTransition] = useTransition(); // for tracking async function like mine as it is non-blocking update
+
+	const [submitting, setSubmitting] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setSubmitting(true);
 
-		startTransition(async () => {
+		try {
 			const { success, error } = await createBooking({
 				eventId,
 				slug,
@@ -33,19 +35,20 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 			});
 
 			const toast = await getToast();
+
 			if (success) {
 				setSubmitted(true);
 				toast.success("🎉 Your booking is done successfully");
 				posthog.capture("event_booked", { eventId, slug, email });
 			} else {
 				setError(error || "Booking Creation Failed");
-				console.error("Booking Creation Failed");
-				toast.error("Your booking creation has been failed");
+				toast.error("Your booking creation has failed");
 				posthog.captureException("Booking Creation Failed");
 			}
-		});
+		} finally {
+			setSubmitting(false);
+		}
 	};
-
 	const { data: session } = useSession();
 
 	return (
@@ -76,11 +79,11 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 							type="submit"
 							className={clsx(
 								"button-submit",
-								isPending ? "bg-primary/90" : ""
+								submitting ? "bg-primary/90" : ""
 							)}
-							disabled={isPending}
+							disabled={submitting}
 						>
-							{isPending ? "Booking..." : "Submit"}
+							{submitting ? "Booking..." : "Submit"}
 						</button>
 						{error && (
 							<p className="text-red-600 text-sm mt-1">{error}</p> // <-- display error

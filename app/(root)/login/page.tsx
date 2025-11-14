@@ -8,6 +8,7 @@ import { useActionState } from "react";
 export type State = {
 	message: string | undefined;
 	errors?: {
+		nameError?: string;
 		emailError?: string;
 		passwordError?: string;
 	};
