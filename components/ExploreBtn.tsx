@@ -7,7 +7,7 @@ const ExploreBtn = () => {
 		<button
 			type="button"
 			id="explore-btn"
-			className="mt-7"
+			className="mt-7 justify-center"
 			onClick={() =>
 				document
 					.getElementById("events")
