@@ -126,13 +126,20 @@ export async function EditUserData(
 		await connectToDatabase();
 		const session = await auth();
 
+		if (!session?.user?.email) {
+			return {
+				success: false,
+				message: "You must be signed in to update your profile.",
+			};
+		}
+
 		const updateField: Record<string, any> = {};
 		updateField[dataType] = value;
 
 		const updatedUser = await UserModel.findOneAndUpdate(
 			{ email: session!.user.email },
 			{ $set: updateField },
-			{ new: true, runValidators: true, projection: { password: 0 } } // Don’t return password
+			{ new: true, runValidators: true, projection: { password: 0 } } // Don't return password
 		);
 
 		if (!updatedUser) {
