@@ -11,7 +11,7 @@ import axios from "axios";
 // types/next-auth.d.ts
 import "next-auth";
 import imagekit from "./lib/imagekit";
-import posthogClient from "./posthog-server";
+import { captureException, trackUserCreated } from "./posthog-server";
 
 declare module "next-auth" {
 	interface Session {
@@ -74,7 +74,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 				// user logged with OAuth
 				if (!user.password) {
-					posthogClient.captureException("Sign in process failed");
+					captureException("Sign in process failed");
 					throw new Error(
 						"You signed up with Google or Github. Please use that option to login."
 					);
@@ -134,12 +134,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 					// track users creation with posthog
 					const { name, email, id } = customUser;
 					try {
-						posthogClient.capture({
-							distinctId: id!,
-							event: "user_created",
-							properties: { name, email },
-						});
-						await posthogClient.flush();
+						trackUserCreated(id!, name, email);
 					} catch (err) {
 						console.error("PostHog capture failed:", err);
 					}
@@ -152,7 +147,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 				// Prevent OAuth login for emails that have credentials
 				if (account!.provider !== "credentials") {
 					if (dbUser && dbUser.password) {
-						posthogClient.captureException("Sign in process failed");
+						captureException("Sign in process failed");
 						throw new Error(
 							"This email is already registered with a password. Please sign in with credentials instead."
 						);
@@ -162,7 +157,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 				return true;
 			} catch (error) {
 				console.error("SignIn callback error:", error);
-				posthogClient.captureException("Sign in process failed");
+				captureException("Sign in process failed");
 				throw new Error("Unable to complete sign-in. Please try again.");
 			}
 		},
