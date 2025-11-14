@@ -35,7 +35,6 @@ const Navbar = async () => {
 									className="rounded-full"
 								/>
 							</Link>
-							</Link>
 						) : (
 							<Link href={"/login"}>Login</Link>
 						)}

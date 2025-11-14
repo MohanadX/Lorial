@@ -5,6 +5,8 @@ import { auth, signIn } from "@/auth";
 import z from "zod";
 import connectToDatabase from "../mongodb";
 import UserModel from "@/database/user.model";
+import axios from "axios";
+import imagekit from "../imagekit";
 const credentialsSchema = z.object({
 	UserName: z.string({ message: "Name Cannot be empty" }),
 	email: z.email({ message: "Please enter a valid email" }),
@@ -35,7 +37,8 @@ export async function authenticate(
 
 	const nameRegex = /^[A-Za-z\s]+$/;
 	const trimmedName = parsed.data.UserName.trim();
-	const validName = trimmedName.length > 0 && nameRegex.test(parsed.data.UserName);
+	const validName =
+		trimmedName.length > 0 && nameRegex.test(parsed.data.UserName);
 
 	if (!validName) {
 		return {
@@ -100,7 +103,7 @@ export async function EditUserData(
 		// if data Type was name or url
 		const { dataType, value } = parsed.data;
 
-		// Step 2: If editing image, check headers using Axios
+		// Step 2: If editing image, check image structure without request (prevent SSRF)
 		if (dataType === "image") {
 			// Create a Set from the comma-separated string
 			const ALLOWED_IMAGE_HOSTS = new Set(
@@ -137,11 +140,12 @@ export async function EditUserData(
 			// check name that cannot contains any numbers
 			// Allow only letters and spaces
 			const nameRegex = /^[A-Za-z\s]+$/;
-			const result = nameRegex.test(value);
-			if (!result) {
+			const trimmedName = parsed.data.value.trim();
+			const validName = trimmedName.length > 0 && nameRegex.test(trimmedName);
+			if (!validName) {
 				return {
 					success: false,
-					message: "Name can only contain letters",
+					message: "Username must contain only letters and can include spaces",
 				};
 			}
 		}
@@ -156,8 +160,35 @@ export async function EditUserData(
 			};
 		}
 
+		let finalValue = value;
+
+		// 3) If image → upload to ImageKit first before update it in database
+		if (dataType === "image") {
+			// Download original image as buffer
+			const res = await axios.get(value, { responseType: "arraybuffer" });
+
+			// extra validation for the image url for more safety
+			if (!res.headers["content-type"]?.startsWith("image/")) {
+				return {
+					success: false,
+					message: "URL does not point to a valid image.",
+				};
+			}
+			const fileBuffer = Buffer.from(res.data);
+
+			// Upload to ImageKit
+			const uploadResult = await imagekit.upload({
+				file: fileBuffer,
+				fileName: `${session.user.name}-${Date.now()}`,
+				folder: "/profiles",
+			});
+
+			// Use ImageKit's final URL
+			finalValue = `${uploadResult.url}?tr=f‑auto,q‑80,format‑webp`;
+		}
+
 		const updateField: Record<string, any> = {};
-		updateField[dataType] = value;
+		updateField[dataType] = finalValue;
 
 		const updatedUser = await UserModel.findOneAndUpdate(
 			{ email: session!.user.email },
@@ -173,8 +204,8 @@ export async function EditUserData(
 			message: `${dataType} updated successfully.`,
 			success: true,
 			data: {
-				name: dataType === "name" ? value : updatedUser.name,
-				image: dataType === "image" ? value : updatedUser.image,
+				name: dataType === "name" ? finalValue : updatedUser.name,
+				image: dataType === "image" ? finalValue : updatedUser.image,
 			},
 		};
 	} catch (error) {
