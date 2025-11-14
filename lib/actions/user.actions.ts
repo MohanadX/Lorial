@@ -34,13 +34,14 @@ export async function authenticate(
 	}
 
 	const nameRegex = /^[A-Za-z\s]+$/;
-	const validName = nameRegex.test(parsed.data.UserName);
+	const trimmedName = parsed.data.UserName.trim();
+	const validName = trimmedName.length > 0 && nameRegex.test(parsed.data.UserName);
 
 	if (!validName) {
 		return {
 			message: "Invalid Username",
 			errors: {
-				nameError: "Username can only contain letters",
+				nameError: "Username must contain letters and can include spaces",
 			},
 		};
 	}
