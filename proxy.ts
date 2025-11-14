@@ -6,7 +6,14 @@ export const config = {
 };
 
 export default async function middleware(req: NextRequest) {
-	const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+	const token = await getToken({
+		req,
+		secret: process.env.AUTH_SECRET,
+		cookieName:
+			process.env.NODE_ENV === "production"
+				? "__Secure-next-auth.session-token"
+				: "next-auth.session-token",
+	});
 	const isLogged = !!token;
 	const pathname = req.nextUrl.pathname;
 
@@ -33,3 +40,9 @@ export default async function middleware(req: NextRequest) {
 
 	return NextResponse.next();
 }
+
+/*
+Locally (NODE_ENV !== "production"), the cookie is next-auth.session-token.
+
+On Vercel (NODE_ENV === "production"), the cookie is __Secure-next-auth.session-token.
+*/
