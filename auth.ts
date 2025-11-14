@@ -41,6 +41,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 		Credentials({
 			// Must define the shape of credentials expected
 			credentials: {
+				name: {
+					label: "Username",
+					type: "text",
+				},
 				email: {
 					label: "Email",
 					type: "text",
@@ -62,6 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 				if (!user) {
 					return {
 						id: "", // temporary unique id, will be replaced in signIn callback
+						name: credentials.name as string,
 						email: credentials!.email as string,
 						password: credentials?.password as string,
 					};

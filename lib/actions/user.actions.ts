@@ -27,12 +27,26 @@ export async function authenticate(
 		return {
 			message: "Invalid inputs",
 			errors: {
+				nameError: errors.UserName?.[0],
 				emailError: errors.email?.[0],
 				passwordError: errors.password?.[0],
 			},
 		};
 	}
+
+	const nameRegex = /^[A-Za-z\s]+$/;
+	const validName = nameRegex.test(parsed.data.UserName);
+
+	if (!validName) {
+		return {
+			message: "Invalid Username",
+			errors: {
+				nameError: "Username can only contain letters",
+			},
+		};
+	}
 	const result = await signIn("credentials", {
+		name: parsed.data.UserName,
 		email: parsed.data.email,
 		password: parsed.data.password,
 		redirect: false,
@@ -88,26 +102,35 @@ export async function EditUserData(
 
 		// Step 2: If editing image, check headers using Axios
 		if (dataType === "image") {
+			// Create a Set from the comma-separated string
+			const ALLOWED_IMAGE_HOSTS = new Set(
+				(process.env.NEXT_PUBLIC_ALLOWED_IMAGE_HOSTS ?? "")
+					.split(",") // split by commas
+					.map((host) => host.trim().toLowerCase()) // normalize & trim spaces
+					.filter(Boolean) // remove empty entries
+			);
+			let parsedUrl: URL;
 			try {
-				const response = await axios.head(value, { timeout: 2000 }); // 5s timeout is allowed to take before being automatically aborted.
-				// Without a timeout, validation could hang server action, delaying other requests.
-				const contentType = response.headers["content-type"];
-
-				if (!contentType || !contentType.startsWith("image/")) {
-					return {
-						message: "Provided URL does not point to a valid image.",
-						success: false,
-					};
-				}
-			} catch (err: any) {
-				console.error("Image URL validation failed:", err);
-				if (err.code === "ECONNABORTED") {
-					return { success: false, message: "Image URL request timed out." };
-				}
+				parsedUrl = new URL(value);
+			} catch {
 				return {
 					success: false,
-					message:
-						"Could not validate the image URL. Please check the link and try again.",
+					message: "Please provide a valid absolute image URL.",
+				};
+			}
+			if (parsedUrl.protocol !== "https:") {
+				return {
+					success: false,
+					message: "Image URLs must use HTTPS.",
+				};
+			}
+			if (
+				ALLOWED_IMAGE_HOSTS.size > 0 &&
+				!ALLOWED_IMAGE_HOSTS.has(parsedUrl.hostname)
+			) {
+				return {
+					success: false,
+					message: "Image host is not permitted.",
 				};
 			}
 		} else {
