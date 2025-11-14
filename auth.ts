@@ -66,9 +66,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 				if (!user) {
 					return {
 						id: "", // temporary unique id, will be replaced in signIn callback
-						name: credentials.name as string,
+						name: credentials!.name as string,
 						email: credentials!.email as string,
-						password: credentials?.password as string,
+						password: credentials!.password as string,
 					};
 				}
 

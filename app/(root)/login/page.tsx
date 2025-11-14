@@ -41,6 +41,11 @@ export default function LoginPage() {
 							min={5}
 						/>
 					</div>
+
+					{state.errors?.nameError && (
+						<p className="text-red-600 mb-4">{state.errors.nameError}</p>
+					)}
+
 					<div>
 						<label htmlFor="email" className="block text-sm font-medium">
 							Email
