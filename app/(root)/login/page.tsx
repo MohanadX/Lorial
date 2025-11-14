@@ -1,8 +1,10 @@
 "use client";
 
 import { authenticate } from "@/lib/actions/user.actions";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import { Router } from "next/router";
 import { useActionState } from "react";
 
 export type State = {
@@ -16,6 +18,11 @@ export type State = {
 
 export default function LoginPage() {
 	const initialState: State = { message: "", errors: {} };
+	const { data: session } = useSession();
+
+	if (session) {
+		redirect("/");
+	}
 
 	const [state, formAction, loading] = useActionState(
 		authenticate,

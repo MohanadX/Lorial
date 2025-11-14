@@ -1,48 +1,54 @@
+// import { NextResponse } from "next/server";
+// import jwt from "jsonwebtoken";
+
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt"; //does not require Node modules; it reads the JWT from cookies and works in Edge.
 
-export const config = {
-	matcher: ["/event/create/:path*", "/user/:path*", "/login"],
-};
+// export const config = {
+// 	matcher: ["/event/create/:path*", "/user/:path*", "/login"],
+// };
 
-export default async function middleware(req: NextRequest) {
-	const token = await getToken({
-		req,
-		secret: process.env.AUTH_SECRET,
-		cookieName:
-			process.env.NODE_ENV === "production"
-				? "__Secure-next-auth.session-token"
-				: "next-auth.session-token",
-	});
-	const isLogged = !!token;
-	const pathname = req.nextUrl.pathname;
+// export default function proxy(req: Request) {
+// 	const cookies = req.headers.get("cookie") || "";
+// 	const tokenCookie =
+// 		cookies
+// 			.split(";")
+// 			.map((c) => c.trim())
+// 			.find(
+// 				(c) =>
+// 					c.startsWith("__Secure-next-auth.session-token=") ||
+// 					c.startsWith("next-auth.session-token=")
+// 			)
+// 			?.split("=")[1] || null;
 
-	// 1) Block logged-in users from accessing /login
-	if (pathname === "/login" && isLogged) {
-		return NextResponse.redirect(new URL("/", req.url));
-	}
+// 	let token: any = null;
+// 	if (tokenCookie && process.env.AUTH_SECRET) {
+// 		try {
+// 			token = jwt.verify(tokenCookie, process.env.AUTH_SECRET);
+// 		} catch (err) {
+// 			token = null;
+// 		}
+// 	}
 
-	// 2) Protect /event/create/*
-	if (pathname.startsWith("/event/create") && !isLogged) {
-		return NextResponse.redirect(new URL("/", req.url));
-	}
+// 	const url = new URL(req.url);
+// 	const pathname = url.pathname;
+// 	const isLogged = !!token;
 
-	// 3) Protect /user/:id pages
-	if (pathname.startsWith("/user/")) {
-		const requestUserId = pathname.split("/")[2] ?? null;
-		if (!isLogged) {
-			return NextResponse.redirect(new URL("/login", req.url));
-		}
-		if (requestUserId !== token.id) {
-			return NextResponse.redirect(new URL("/unauthorized", req.url));
-		}
-	}
+// 	if (pathname === "/login" && isLogged) {
+// 		return NextResponse.redirect(new URL("/", req.url));
+// 	}
+// 	if (pathname.startsWith("/event/create") && !isLogged) {
+// 		return NextResponse.redirect(new URL("/", req.url));
+// 	}
+// 	if (pathname.startsWith("/user/")) {
+// 		const userId = pathname.split("/")[2];
+// 		if (!isLogged) return NextResponse.redirect(new URL("/login", req.url));
+// 		if (userId !== token.id)
+// 			return NextResponse.redirect(new URL("/unauthorized", req.url));
+// 	}
 
+// 	return NextResponse.next();
+// }
+
+export default function proxy(req: NextRequest) {
 	return NextResponse.next();
 }
-
-/*
-Locally (NODE_ENV !== "production"), the cookie is next-auth.session-token.
-
-On Vercel (NODE_ENV === "production"), the cookie is __Secure-next-auth.session-token.
-*/
