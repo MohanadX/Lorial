@@ -29,8 +29,9 @@ export default async function UserPage({
 						"use server";
 						await signOut({ redirectTo: "/?logout=success" });
 					}}
+					className="text-center"
 				>
-					<button className="change" type="submit">
+					<button className="change mx-auto" type="submit">
 						Sign Out
 					</button>
 				</form>

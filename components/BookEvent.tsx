@@ -60,7 +60,7 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 					<div>
 						{session?.user ? (
 							<p>
-								Book This Event with your email on our website, don't this this
+								Book This Event with your email on our website, don't miss this
 								chance
 							</p>
 						) : (
