@@ -5,7 +5,6 @@ import { auth, signIn } from "@/auth";
 import z from "zod";
 import connectToDatabase from "../mongodb";
 import UserModel from "@/database/user.model";
-import axios from "axios";
 const credentialsSchema = z.object({
 	UserName: z.string({ message: "Name Cannot be empty" }),
 	email: z.email({ message: "Please enter a valid email" }),
