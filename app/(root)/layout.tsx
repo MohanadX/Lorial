@@ -10,6 +10,7 @@ export default function Layout({
 		<>
 			<SessionProvider>{children}</SessionProvider>
 			<Toaster
+				visibleToasts={1}
 				closeButton
 				richColors
 				theme="dark"

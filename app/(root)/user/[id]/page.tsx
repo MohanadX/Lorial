@@ -1,16 +1,9 @@
 import { auth } from "@/auth";
 import EditProfileInput from "@/components/EditProfileInput";
 import { signOut } from "@/auth";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import Form from "next/form";
 
-const BASE_URL = process.env.BASE_URL;
-
-export default async function UserPage({
-	searchParams,
-}: {
-	searchParams: Promise<{ id: string }>;
-}) {
+export default async function UserPage() {
 	const session = await auth();
 	return (
 		<main className="max-w‑2xl text-center p‑6">
@@ -24,7 +17,7 @@ export default async function UserPage({
 
 				<p className="my-5">Or Do you want to Sign out</p>
 
-				<form
+				<Form
 					action={async () => {
 						"use server";
 						await signOut({ redirectTo: "/?logout=success" });
@@ -34,7 +27,7 @@ export default async function UserPage({
 					<button className="change mx-auto" type="submit">
 						Sign Out
 					</button>
-				</form>
+				</Form>
 			</div>
 		</main>
 	);

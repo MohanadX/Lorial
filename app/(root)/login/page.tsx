@@ -4,7 +4,6 @@ import { authenticate } from "@/lib/actions/user.actions";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { Router } from "next/router";
 import { useActionState } from "react";
 
 export type State = {
