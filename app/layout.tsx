@@ -105,7 +105,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${SchibstedGrotesk.variable} ${MartianMono.variable} min-h-screen antialiased`}
+				className={`${SchibstedGrotesk.variable} ${MartianMono.variable} min-h-screen w-full antialiased`}
 			>
 				<Suspense fallback={<Loader type="navbar" />}>
 					<Navbar />

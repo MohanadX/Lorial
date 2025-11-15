@@ -45,16 +45,16 @@ const EditProfileInput = ({ dataType }: { dataType: "name" | "image" }) => {
 	return (
 		<form
 			action={formAction}
-			className="flex gap-2 items-end border-b border-gray-300 pb-3 mb-4"
+			className="flex gap-2 items-end border-b mt-3 border-gray-300 pb-3 mb-4"
 		>
 			<div className="flex-1">
 				<label
 					htmlFor={dataType}
-					className="block text-sm font-medium text-left capitalize mb-1"
+					className="block text-sm font-medium md:text-left text-center  capitalize mb-1"
 				>
 					Change {dataType}
 				</label>
-				<div className="flex gap-3 items-center">
+				<div className="flex gap-3 max-md:flex-wrap max-md: justify-center items-center">
 					<input
 						type="text"
 						id={dataType}
@@ -62,7 +62,7 @@ const EditProfileInput = ({ dataType }: { dataType: "name" | "image" }) => {
 						placeholder={
 							dataType === "image" ? "Enter new image URL" : "Enter new name"
 						}
-						className="block w-full border px-3 py-2 rounded focus:ring focus:ring-blue-400"
+						className="block md:basis-full basis-[90%] border px-3 py-2 rounded focus:ring focus:ring-blue-400"
 						value={editedValue}
 						onChange={(e) => setEditedValue(e.target.value)}
 						required

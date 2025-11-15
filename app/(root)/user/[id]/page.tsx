@@ -6,7 +6,7 @@ import Form from "next/form";
 export default async function UserPage() {
 	const session = await auth();
 	return (
-		<main className="max-w‑2xl max-md:max-w-xl text-center md:p-6">
+		<div className="max-w‑2xl max-md:max-w-xl text-center md:p-6">
 			<h1 className="text‑2xl text-center font‑bold mb‑4">Edit Profile</h1>
 			{/* 3 inputs for changing user data */}
 			<div className="mx-auto w-100 mt-5">
@@ -29,6 +29,6 @@ export default async function UserPage() {
 					</button>
 				</Form>
 			</div>
-		</main>
+		</div>
 	);
 }
