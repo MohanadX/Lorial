@@ -19,10 +19,6 @@ export default function LoginPage() {
 	const initialState: State = { message: "", errors: {} };
 	const { data: session } = useSession();
 
-	if (session) {
-		redirect("/");
-	}
-
 	const [state, formAction, loading] = useActionState(
 		authenticate,
 		initialState
