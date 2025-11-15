@@ -4,9 +4,11 @@ import { authenticate } from "@/lib/actions/user.actions";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 import { useActionState } from "react";
 
 export type State = {
+	success?: boolean;
 	message: string | undefined;
 	errors?: {
 		nameError?: string;
@@ -17,12 +19,15 @@ export type State = {
 
 export default function LoginPage() {
 	const initialState: State = { message: "", errors: {} };
-	const { data: session } = useSession();
 
 	const [state, formAction, loading] = useActionState(
 		authenticate,
 		initialState
 	);
+
+	if (state.success) {
+		redirect("/?login=success");
+	}
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen">
 			<div className=" p-8 rounded shadow-md w-full max-w-md">

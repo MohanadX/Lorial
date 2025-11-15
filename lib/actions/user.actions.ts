@@ -8,7 +8,7 @@ import UserModel from "@/database/user.model";
 import axios from "axios";
 import imagekit from "../imagekit";
 const credentialsSchema = z.object({
-	UserName: z.string({ message: "Name Cannot be empty" }),
+	name: z.string({ message: "Name Cannot be empty" }),
 	email: z.email({ message: "Please enter a valid email" }),
 	password: z
 		.string()
@@ -28,7 +28,7 @@ export async function authenticate(
 		return {
 			message: "Invalid inputs",
 			errors: {
-				nameError: errors.UserName?.[0],
+				nameError: errors.name?.[0],
 				emailError: errors.email?.[0],
 				passwordError: errors.password?.[0],
 			},
@@ -36,9 +36,8 @@ export async function authenticate(
 	}
 
 	const nameRegex = /^[A-Za-z\s]+$/;
-	const trimmedName = parsed.data.UserName.trim();
-	const validName =
-		trimmedName.length > 0 && nameRegex.test(parsed.data.UserName);
+	const trimmedName = parsed.data.name.trim();
+	const validName = trimmedName.length > 0 && nameRegex.test(parsed.data.name);
 
 	if (!validName) {
 		return {
@@ -49,7 +48,7 @@ export async function authenticate(
 		};
 	}
 	const result = await signIn("credentials", {
-		name: parsed.data.UserName,
+		name: parsed.data.name,
 		email: parsed.data.email,
 		password: parsed.data.password,
 		redirect: false,
@@ -64,6 +63,7 @@ export async function authenticate(
 	}
 
 	return {
+		success: true,
 		message: "Login Success",
 		errors: {},
 	};
