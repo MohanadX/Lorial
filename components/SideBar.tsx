@@ -48,7 +48,7 @@ export default function Sidebar() {
 							<Link
 								key={item.href}
 								href={item.href}
-								className={`flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
+								className={`flex max-md:mt-10 items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
 									pathname === item.href ? "bg-gray-700 font-semibold" : ""
 								}`}
 								onClick={() => setIsOpen(false)} // auto close when selecting a link (mobile)

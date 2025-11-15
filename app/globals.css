@@ -116,7 +116,7 @@
 	}
 
 	main {
-		@apply mx-auto container flex flex-col sm:px-10 px-5 py-10;
+		@apply mx-auto container flex flex-col sm:px-2 md:px-5 py-10;
 	}
 
 	h1 {

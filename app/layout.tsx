@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar";
 import { Suspense } from "react";
 import Loader from "@/components/Loader";
 
+const BASE_URL = process.env.BASE_URL;
+
 const SchibstedGrotesk = localFont({
 	src: [
 		{
@@ -59,9 +61,9 @@ export const metadata: Metadata = {
 		title: "Lorial – Developer Community Events Hub",
 		description:
 			"The Hub For every Developers events For better Development Future",
-		images: ["https://lorial.netlify.app/favicon.ico"],
+		images: [`${BASE_URL}/favicon.ico`],
 		siteName: "Lorial",
-		url: "https://lorial.netlify.app",
+		url: BASE_URL,
 		type: "website",
 	},
 	robots: {
@@ -80,7 +82,7 @@ export const metadata: Metadata = {
 			"@context": "http://schema.org",
 			"@type": "WebSite",
 			name: "Lorial",
-			url: "https://lorial.netlify.app",
+			url: BASE_URL,
 			description:
 				"A platform for developers to discover, share, and attend the latest developer community events.",
 			publisher: {
@@ -88,7 +90,7 @@ export const metadata: Metadata = {
 				name: "Lorial",
 				logo: {
 					"@type": "ImageObject",
-					url: "https://lorial.netlify.app/favicon.ico", // your logo URL
+					url: `${BASE_URL}/favicon.ico`, // your logo URL
 				},
 			},
 		}),
