@@ -190,13 +190,7 @@ export function SkeletonCardRow() {
 
 function SkeletonCard() {
 	return (
-		<div
-			className="bg-gray-200 rounded-xl animate-pulse"
-			style={{
-				height: "423.044px",
-				width: "288.009px",
-			}}
-		>
+		<div className="bg-gray-200 rounded-xl animate-pulse">
 			{/* Optional: inner skeleton elements */}
 			<div className="h-48 bg-gray-300 rounded-t-xl w-full"></div>
 			<div className="p-4">
