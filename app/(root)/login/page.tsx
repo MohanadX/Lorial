@@ -5,7 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 export type State = {
 	success?: boolean;
@@ -18,6 +18,10 @@ export type State = {
 };
 
 export default function LoginPage() {
+	// inputs for saving from useActionState taking away input after invalidation of inputs
+	const [userName, setUserName] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const initialState: State = { message: "", errors: {} };
 
 	const [state, formAction, loading] = useActionState(
@@ -46,6 +50,8 @@ export default function LoginPage() {
 							className="mt-1 block w-full border px-3 py-2 rounded"
 							required
 							min={5}
+							value={userName}
+							onChange={(event) => setUserName(event.target.value)}
 						/>
 					</div>
 
@@ -63,6 +69,8 @@ export default function LoginPage() {
 							name="email"
 							className="mt-1 block w-full border px-3 py-2 rounded"
 							required
+							value={email}
+							onChange={(event) => setEmail(event.target.value)}
 						/>
 					</div>
 
@@ -80,6 +88,8 @@ export default function LoginPage() {
 							name="password"
 							className="mt-1 block w-full border px-3 py-2 rounded"
 							required
+							value={password}
+							onChange={(event) => setPassword(event.target.value)}
 						/>
 					</div>
 
