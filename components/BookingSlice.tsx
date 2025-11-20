@@ -17,7 +17,7 @@ const BookingSlice = ({ createdAt, event }: Booking_Event) => {
 	return (
 		<Link href={`/event/${slug}`} className="book-card block">
 			<p className="text-left text-2xl">Event Details:</p>
-			<div className="flex justify-between flex-wrap max-sm:text-center">
+			<div className="flex justify-between flex-wrap max-sm:text-center gap-x-3">
 				<span>Name: {title}</span>
 				<span>Event Date: {date}</span>
 			</div>
