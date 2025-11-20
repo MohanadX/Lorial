@@ -47,12 +47,12 @@ export default function Sidebar() {
 				<div className="flex flex-col h-full">
 					<h2 className="text-xl font-bold mb-6 text-white">Lorial Menu</h2>
 
-					<nav className="flex flex-col gap-3">
+					<nav className="flex flex-col max-md:mt-10 gap-3">
 						{menuItems.map((item) => (
 							<Link
 								key={item.href}
 								href={item.href as Route}
-								className={`flex max-md:mt-10 items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
+								className={`flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
 									// Treat a menu item as active when the current pathname matches either
 									// the full href (rare) or the href without query params.
 									(() => {
