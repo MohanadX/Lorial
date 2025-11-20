@@ -103,7 +103,7 @@ function escapeHtml(text: string): string {
  * Using encodeURIComponent prevents injection via the slug.
  */
 function buildEventUrl(slug: string) {
-	const base = process.env.BASE_URL; // <- change site uses another base
+	const base = process.env.BASE_URL || "https://lorial.vercel.app"; // <- change site uses another base
 	const safeSlug = encodeURIComponent(slug || "");
 	return `${base}/event/${safeSlug}`;
 }

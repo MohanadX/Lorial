@@ -128,7 +128,7 @@ export async function GET(req: NextRequest) {
 		const { searchParams } = new URL(req.url);
 
 		const skip = Number(searchParams.get("skip") || 0);
-		const limit = Number(searchParams.get("limit") || 6);
+		const limit = Math.min(Number(searchParams.get("limit") || 6), 10);
 
 		const events = await Event.find()
 			.sort({ createdAt: -1 })

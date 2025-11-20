@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { FaUserEdit, FaCalendarCheck, FaBars, FaTimes } from "react-icons/fa";
+import { Route } from "next";
 
 export default function Sidebar() {
 	const pathname = usePathname();
@@ -11,15 +12,18 @@ export default function Sidebar() {
 	const params = useParams();
 	const userId = params.id;
 
+	// Derive a stable base user path (avoid using the current pathname)
+	const userBase = `/user/${userId}`;
+
 	const menuItems = [
 		{
 			label: "Edit Profile",
-			href: `/user/${userId}`,
+			href: `${userBase}`,
 			icon: <FaUserEdit />,
 		},
 		{
 			label: "Bookings",
-			href: `${pathname}/bookings?userId=${userId}`,
+			href: `${userBase}/bookings?userId=${userId}`,
 			icon: <FaCalendarCheck />,
 		},
 	];
@@ -36,7 +40,7 @@ export default function Sidebar() {
 
 			{/* Sidebar */}
 			<aside
-				className={`fixed mr-4 top-0 left-0 h-screen w-64 bg-black border-r border-gray-600 transform transition-transform duration-300 ease-in-out z-40 
+				className={`fixed top-0 left-0 h-screen w-64 bg-black border-r border-gray-600 transform transition-transform duration-300 ease-in-out z-40 
 				${isOpen ? "translate-x-0" : "-translate-x-full"} 
 				md:translate-x-0 md:relative`}
 			>
@@ -47,9 +51,16 @@ export default function Sidebar() {
 						{menuItems.map((item) => (
 							<Link
 								key={item.href}
-								href={item.href}
+								href={item.href as Route}
 								className={`flex max-md:mt-10 items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
-									pathname === item.href ? "bg-gray-700 font-semibold" : ""
+									// Treat a menu item as active when the current pathname matches either
+									// the full href (rare) or the href without query params.
+									(() => {
+										const hrefBase = item.href.split("?")[0];
+										return pathname === item.href || pathname === hrefBase
+											? "bg-gray-700 font-semibold"
+											: "";
+									})()
 								}`}
 								onClick={() => setIsOpen(false)} // auto close when selecting a link (mobile)
 							>

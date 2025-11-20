@@ -4,6 +4,7 @@ import EventCard from "@/components/EventCard";
 import { BookingModel } from "@/database";
 import { EventDocument } from "@/database/event.model";
 import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
+import connectToDatabase from "@/lib/mongodb";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -85,6 +86,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	let isBooked;
 
 	if (session?.user) {
+		await connectToDatabase();
 		isBooked = await BookingModel.findOne({
 			eventId: _id,
 			email: session.user.email,
