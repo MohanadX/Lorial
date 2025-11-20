@@ -121,11 +121,19 @@ export async function POST(req: NextRequest) {
 	}
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
 	try {
 		await connectToDatabase();
 
-		const events = await Event.find().sort({ createdAt: -1 }); // the newest will be first
+		const { searchParams } = new URL(req.url);
+
+		const skip = Number(searchParams.get("skip") || 0);
+		const limit = Number(searchParams.get("limit") || 6);
+
+		const events = await Event.find()
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit); // the newest will be first
 
 		return NextResponse.json(
 			{ message: "Events Fetched Successfully", events },

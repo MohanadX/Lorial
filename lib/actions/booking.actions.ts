@@ -1,6 +1,6 @@
 "use server";
 
-import { Booking } from "@/database";
+import { Booking, BookingModel } from "@/database";
 import connectToDatabase from "../mongodb";
 import nodemailer from "nodemailer";
 import z from "zod";
@@ -103,7 +103,7 @@ function escapeHtml(text: string): string {
  * Using encodeURIComponent prevents injection via the slug.
  */
 function buildEventUrl(slug: string) {
-	const base = "https://lorial.netlify.app"; // <- change site uses another base
+	const base = process.env.BASE_URL; // <- change site uses another base
 	const safeSlug = encodeURIComponent(slug || "");
 	return `${base}/event/${safeSlug}`;
 }

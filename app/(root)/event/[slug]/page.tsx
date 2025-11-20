@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
 import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
+import { BookingModel } from "@/database";
 import { EventDocument } from "@/database/event.model";
 import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
 import Image from "next/image";
@@ -78,6 +80,16 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 		notFound();
 	}
 
+	const session = await auth();
+
+	let isBooked;
+
+	if (session?.user) {
+		isBooked = await BookingModel.findOne({
+			eventId: _id,
+			email: session.user.email,
+		});
+	}
 	return (
 		<section id="event">
 			<div className="header">
@@ -134,21 +146,22 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 					<EventTags tags={tags} />
 				</div>
 				{/* Right Side - Booking Form */}
+				{!isBooked && (
+					<aside className="booking">
+						<div className="signup-card">
+							<h2>Book Your Spot</h2>
+							{bookings > 0 ? (
+								<p className="text-sm">
+									Join {bookings} Who Have already booked their spot!
+								</p>
+							) : (
+								<p className="text-sm">Be the first one to book your spot!</p>
+							)}
 
-				<aside className="booking">
-					<div className="signup-card">
-						<h2>Book Your Spot</h2>
-						{bookings > 0 ? (
-							<p className="text-sm">
-								Join {bookings} Who Have already booked their spot!
-							</p>
-						) : (
-							<p className="text-sm">Be the first one to book your spot!</p>
-						)}
-
-						<BookEvent eventId={_id} slug={slug} />
-					</div>
-				</aside>
+							<BookEvent eventId={_id} slug={slug} />
+						</div>
+					</aside>
+				)}
 			</div>
 
 			<Suspense fallback={<SkeletonCardRow />}>

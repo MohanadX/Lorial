@@ -5,6 +5,7 @@ import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { SkeletonCardRow } from "./event/[slug]/page";
 import LoginToast from "@/components/LoginToast";
+import LoadEvents from "@/components/LoadEvents";
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -24,17 +25,21 @@ const EventsList = async () => {
 		);
 	}
 
-	const { events } = await response.json();
+	const { events }: { events: EventDocument[] } = await response.json();
 
 	return (
-		<ul className="events list-none" id="events">
-			{events?.length > 0 &&
-				events.map((event: EventDocument) => (
-					<li key={event.title}>
-						<EventCard {...event} />
-					</li>
-				))}
-		</ul>
+		<>
+			<ul className="events list-none" id="events">
+				{events?.length > 0 &&
+					events.map((event: EventDocument) => (
+						<li key={event.title}>
+							<EventCard {...event} />
+						</li>
+					))}
+			</ul>
+			{/* Load More */}
+			<LoadEvents initialSkip={events.length} />
+		</>
 	);
 };
 

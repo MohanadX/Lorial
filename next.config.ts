@@ -4,9 +4,10 @@ const nextConfig: NextConfig = {
 	typescript: {
 		ignoreBuildErrors: true,
 	},
+	typedRoutes: true,
 	reactCompiler: true,
 	experimental: {
-		// turbopackFileSystemCacheForDev: true,
+		typedEnv: true,
 	},
 	images: {
 		remotePatterns: [
