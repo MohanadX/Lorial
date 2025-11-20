@@ -10,7 +10,7 @@ import LoadEvents from "@/components/LoadEvents";
 const BASE_URL = process.env.BASE_URL;
 
 if (!BASE_URL) {
-	throw new Error("NEXT_PUBLIC_BASE_URL environment variable is not defined");
+	throw new Error("BASE_URL environment variable is not defined");
 }
 
 const EventsList = async () => {

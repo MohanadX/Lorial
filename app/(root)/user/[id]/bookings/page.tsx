@@ -48,7 +48,7 @@ const Bookings = async ({ searchParams }: PageProps) => {
 	const totalPages = result.data.totalPages;
 
 	return (
-		<div className="max-w-2xl max-md:max-w-xl h-40 text-center">
+		<div className="text-center">
 			<h1>Your Bookings</h1>
 			{bookings.length > 0 ? (
 				<ul className="list-none mx-auto max-w-xl mt-5">

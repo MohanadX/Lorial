@@ -8,7 +8,9 @@ import axios from "axios";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 if (!BASE_URL) {
-	throw new Error(`BASE URL is not found and its value is: ${BASE_URL}`);
+	throw new Error(
+		`NEXT_PUBLIC_BASE_URL is not found and its value is: ${BASE_URL}`
+	);
 }
 
 const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {

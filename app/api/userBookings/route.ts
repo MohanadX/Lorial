@@ -11,21 +11,7 @@ export async function GET(req: NextRequest) {
 		const limit = 5;
 		const skip = limit * (page - 1); // every page show 5 bookings
 
-		// Authenticate the request and derive the user's email from the session.
-		const session = await auth();
-		const sessionEmail = session?.user?.email;
-
-		if (!sessionEmail || typeof sessionEmail !== "string") {
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-		}
-
-		// If a client-provided email query param exists, ensure it matches the session email.
-		const providedEmail = params.get("email");
-		if (providedEmail && providedEmail !== sessionEmail) {
-			return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-		}
-
-		const email = sessionEmail;
+		const email = params.get("email");
 
 		// find user bookings
 		await connectToDatabase();
