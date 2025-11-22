@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
 	typescript: {
 		ignoreBuildErrors: true,
 	},
-	typedRoutes: true,
 	reactCompiler: true,
 	experimental: {
 		typedEnv: true,
