@@ -40,12 +40,42 @@ const Bookings = async ({ searchParams }: PageProps) => {
 		);
 	}
 
-	const result = await axios.get(`${BASE_URL}/api/userBookings/`, {
-		params: { email: session.user.email, page },
-	});
+	let bookings: Booking_Event[] = [];
+	let totalPages = 0;
 
-	const { bookings } = result.data;
-	const totalPages = result.data.totalPages;
+	try {
+		const result = await axios.get(`${BASE_URL}/api/userBookings/`, {
+			params: { email: session.user.email, page },
+			timeout: 10000, // 10 second timeout
+		});
+		// Basic response shape validation
+		if (
+			!result ||
+			!result.data ||
+			!Array.isArray(result.data.bookings) ||
+			typeof result.data.totalPages !== "number"
+		) {
+			throw new Error("Invalid response shape from userBookings API");
+		}
+
+		bookings = result.data.bookings;
+		const foundBookings = result.data.found;
+		totalPages = result.data.totalPages;
+	} catch (err) {
+		// Log only in development
+		if (process.env.NODE_ENV === "development") {
+			console.error("Failed to load bookings:", err);
+		}
+
+		return (
+			<div className="max-w-2xl max-md:max-w-xl h-40 text-center">
+				<h1 className="text-xl font-semibold">Error</h1>
+				<p className="mt-2 text-gray-500">
+					Unable to load your bookings. Please try again later.
+				</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className="text-center">

@@ -47,7 +47,7 @@ const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 		status,
 		error,
 	} = useInfiniteQuery({
-		queryKey: ["events"],
+		queryKey: ["events", initialSkip],
 		// queryFn takes a pageParam which we use to request correct "skip"
 		queryFn: fetchEventsPage,
 		// / start from initialSkip (e.g. from server-rendered initial events)
@@ -58,7 +58,6 @@ const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 		staleTime: 1000 * 60, // 1 minute
 		enabled: false, //  disables automatic first fetch
 	});
-
 	if (status === "error") {
 		return <p>Error loading events: {(error as Error).message}</p>;
 	}
@@ -83,7 +82,7 @@ const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 					if (!firstLoad) setFirstLoad(true); // trigger first fetch
 					fetchNextPage();
 				}}
-				className="load-more flex text-center items-center gap-2 px-4 py-2 border rounded-md  hover:bg-gray-800 disabled:opacity-50"
+				className="load-more flex justify-center items-center gap-2 px-4 py-2 border rounded-md  hover:bg-gray-800 disabled:opacity-50"
 				disabled={isFetchingNextPage || (firstLoad && !hasNextPage)}
 			>
 				{isFetchingNextPage && (

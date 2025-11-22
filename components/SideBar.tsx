@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { FaUserEdit, FaCalendarCheck, FaBars, FaTimes } from "react-icons/fa";
-import { Route } from "next";
 
 export default function Sidebar() {
 	const pathname = usePathname();
@@ -51,7 +50,7 @@ export default function Sidebar() {
 						{menuItems.map((item) => (
 							<Link
 								key={item.href}
-								href={item.href as Route}
+								href={{ pathname: item.href }}
 								className={`flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
 									// Treat a menu item as active when the current pathname matches either
 									// the full href (rare) or the href without query params.
