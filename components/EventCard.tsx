@@ -19,6 +19,9 @@ const EventCard = ({ title, image, slug, location, date, time }: Props) => {
 				width={410}
 				height={300}
 				className="poster"
+				placeholder="blur"
+				blurDataURL={`${image}?tr=w-20,h-20,bl-5,q-10`}
+				priority
 			/>
 
 			<div className="flex flex-row gap-2">

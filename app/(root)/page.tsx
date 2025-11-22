@@ -4,8 +4,9 @@ import { EventDocument } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { SkeletonCardRow } from "./event/[slug]/page";
-import LoginToast from "@/components/LoginToast";
+import dynamic from "next/dynamic";
 import LoadEvents from "@/components/LoadEvents";
+const LoginToast = dynamic(() => import("@/components/LoginToast"));
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -17,7 +18,12 @@ const EventsList = async () => {
 	"use cache: remote";
 	cacheLife("minutes");
 
-	const response = await fetch(`${BASE_URL}/api/events`);
+	const response = await fetch(`${BASE_URL}/api/events`, {
+		cache: "force-cache",
+		next: {
+			revalidate: 60,
+		},
+	});
 
 	if (!response.ok) {
 		throw new Error(
@@ -32,7 +38,7 @@ const EventsList = async () => {
 			<ul className="events list-none" id="events">
 				{events?.length > 0 &&
 					events.map((event: EventDocument) => (
-						<li key={event.title}>
+						<li key={event._id}>
 							<EventCard {...event} />
 						</li>
 					))}

@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
 import { BookingModel } from "@/database";
-import { EventDocument } from "@/database/event.model";
+import { EventData, EventDocument } from "@/database/event.model";
 import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
 import connectToDatabase from "@/lib/mongodb";
 import Image from "next/image";
@@ -56,7 +56,16 @@ const EventTags = ({ tags }: { tags: string[] }) => {
 const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	const { slug } = await params;
 
-	const request = await fetch(`${BASE_URL}/api/events/${slug}`);
+	// Start work in parallel
+	const eventPromise = fetch(`${BASE_URL}/api/events/${slug}`);
+	const sessionPromise = auth();
+
+	// Await all and fetch immediately
+	const [request, session, similarEvents] = await Promise.all([
+		eventPromise,
+		sessionPromise,
+		getSimilarEventBySlug(slug),
+	]);
 
 	const {
 		event: {
@@ -81,9 +90,8 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 		notFound();
 	}
 
-	const session = await auth();
-
-	let isBooked;
+	// Now DB-related work
+	let isBooked = null;
 
 	if (session?.user) {
 		await connectToDatabase();
@@ -92,6 +100,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 			email: session.user.email,
 		});
 	}
+
 	return (
 		<section id="event">
 			<div className="header">
@@ -109,6 +118,8 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 						height={800}
 						className="banner"
 						priority
+						placeholder="blur"
+						blurDataURL={`${image}?tr=w-20,h-20,bl-5,q-10`} // tiny blurred version
 					/>
 
 					<section className="flex-col gap-2">
@@ -167,14 +178,17 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 			</div>
 
 			<Suspense fallback={<SkeletonCardRow />}>
-				<SimilarEventsRen slug={slug} />
+				<SimilarEventsRen similarEvents={similarEvents} />
 			</Suspense>
 		</section>
 	);
 };
 
-async function SimilarEventsRen({ slug }: { slug: string }) {
-	const similarEvents = await getSimilarEventBySlug(slug);
+async function SimilarEventsRen({
+	similarEvents,
+}: {
+	similarEvents: EventData[];
+}) {
 	return (
 		<div className="flex flex-col w-full gap-4 pt-20">
 			<h2>Similar Events</h2>
