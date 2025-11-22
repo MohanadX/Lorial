@@ -7,12 +7,12 @@ import axios from "axios";
 const BASE_URL = process.env.BASE_URL;
 
 interface PageProps {
-	params: Promise<{ userId: string }>;
+	params: Promise<{ id: string }>;
 	searchParams: Promise<{ page?: string }>;
 }
 
 const Bookings = async ({ searchParams, params }: PageProps) => {
-	const userId = (await params).userId;
+	const userId = (await params).id;
 	const { page: pageNumber } = await searchParams;
 	const page = Number(pageNumber ?? 1);
 
