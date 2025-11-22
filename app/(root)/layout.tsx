@@ -1,3 +1,4 @@
+import Provider from "@/components/QueryProvider";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 
@@ -8,7 +9,9 @@ export default function Layout({
 }>) {
 	return (
 		<>
-			<SessionProvider>{children}</SessionProvider>
+			<SessionProvider>
+				<Provider>{children}</Provider>
+			</SessionProvider>
 			<Toaster
 				visibleToasts={1}
 				closeButton

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import EventCard from "./EventCard";
-import { EventDocument } from "@/database/event.model";
+import { EventData } from "@/database/event.model";
 import axios from "axios";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -13,81 +14,86 @@ if (!BASE_URL) {
 	);
 }
 
-const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
-	const [skip, setSkip] = useState(initialSkip);
-	const [events, setEvents] = useState<EventDocument[]>([]);
-	const [loading, setLoading] = useState(false);
+// Define a function that fetches a "page" of events
+async function fetchEventsPage(params: { pageParam?: number }) {
+	const skip = params.pageParam ?? 0;
+	const limit = 6;
 
-	// Track mounted state to prevent invalid state updates (ensures you don’t update state after unmount (avoids React memory leaks))
-	const isMounted = useRef(true);
-
-	// Store active AbortController
-	const abortControllerRef = useRef<AbortController | null>(null);
-
-	// Cleanup on unmount
-	useEffect(() => {
-		return () => {
-			// Component is unmounting
-			isMounted.current = false;
-
-			// Abort any in-progress request
-			if (abortControllerRef.current) {
-				abortControllerRef.current.abort();
-			}
-		};
-	}, []);
-
-	const loadMore = async () => {
-		setLoading(true);
-
-		// Create a NEW AbortController for each request
-		const controller = new AbortController();
-		abortControllerRef.current = controller;
-
-		try {
-			const res = await axios.get(`${BASE_URL}/api/events`, {
-				params: { skip, limit: 6 },
-				signal: controller.signal, // axios supports AbortController
-			});
-
-			const newEvents: EventDocument[] = res.data.events;
-
-			if (isMounted.current) {
-				setEvents((prev) => [...prev, ...newEvents]);
-				setSkip((prev) => prev + newEvents.length);
-			}
-		} catch (err: any) {
-			if (axios.isCancel(err)) {
-				console.log("Axios request cancelled");
-			} else {
-				console.error("Error loading events:", err);
-			}
-		} finally {
-			if (isMounted.current) setLoading(false);
+	const response = await axios.get<{ events: EventData[] }>(
+		`${BASE_URL}/api/events`,
+		{
+			params: { skip, limit },
 		}
-	};
+	);
 
+	const events = response.data.events;
+
+	// Figure out the next skip (i.e. next pageParam)
+	const nextSkip = events.length < limit ? null : skip + events.length;
+
+	return {
+		events,
+		nextSkip,
+	};
+}
+
+const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
+	const [firstLoad, setFirstLoad] = useState(false);
+	const {
+		data,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		status,
+		error,
+	} = useInfiniteQuery({
+		queryKey: ["events"],
+		// queryFn takes a pageParam which we use to request correct "skip"
+		queryFn: fetchEventsPage,
+		// / start from initialSkip (e.g. from server-rendered initial events)
+		initialPageParam: initialSkip,
+		getNextPageParam: (lastPage) => {
+			return lastPage.nextSkip;
+		},
+		staleTime: 1000 * 60, // 1 minute
+		enabled: false, //  disables automatic first fetch
+	});
+
+	if (status === "error") {
+		return <p>Error loading events: {(error as Error).message}</p>;
+	}
+
+	// console.log({ ...data }, status);
 	return (
 		<>
-			{events && (
-				<ul className="events list-none mt-4">
-					{events.map((event) => (
-						<li key={event._id}>
-							<EventCard {...event} />
-						</li>
-					))}
-				</ul>
-			)}
+			<ul className="events list-none mt-4">
+				{data?.pages.map((page, index) => (
+					<Fragment key={index}>
+						{page.events.map((event) => (
+							<li key={event._id}>
+								<EventCard {...event} />
+							</li>
+						))}
+					</Fragment>
+				))}
+			</ul>
 
 			<button
-				onClick={loadMore}
-				className="load-more flex items-center gap-2 px-4 py-2 border rounded-md  hover:bg-gray-800 disabled:opacity-50"
-				disabled={loading}
+				onClick={() => {
+					if (!firstLoad) setFirstLoad(true); // trigger first fetch
+					fetchNextPage();
+				}}
+				className="load-more flex text-center items-center gap-2 px-4 py-2 border rounded-md  hover:bg-gray-800 disabled:opacity-50"
+				disabled={isFetchingNextPage || (firstLoad && !hasNextPage)}
 			>
-				{loading && (
+				{isFetchingNextPage && (
 					<span className="w-4 h-4 border-2 border-t-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></span>
 				)}
-				{loading ? "Loading..." : "Show More"}
+				{isFetchingNextPage
+					? "Loading..."
+					: firstLoad && !hasNextPage
+					? "No More Events"
+					: "Show Events"}
 			</button>
 		</>
 	);

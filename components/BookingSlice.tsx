@@ -1,3 +1,4 @@
+import { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,7 +16,7 @@ const BookingSlice = ({ createdAt, event }: Booking_Event) => {
 	const { slug, title, date } = event;
 
 	return (
-		<Link href={`/event/${slug}`} className="book-card block">
+		<Link href={`/event/${slug}` as Route} className="book-card block">
 			<p className="text-left text-2xl">Event Details:</p>
 			<div className="flex justify-between flex-wrap max-sm:text-center gap-x-3">
 				<span>Name: {title}</span>
