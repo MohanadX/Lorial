@@ -22,7 +22,7 @@ export default function Sidebar() {
 		},
 		{
 			label: "Bookings",
-			href: `${userBase}/bookings?userId=${userId}`,
+			href: `${userBase}/bookings`,
 			icon: <FaCalendarCheck />,
 		},
 	];
