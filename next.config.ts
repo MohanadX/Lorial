@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
 	experimental: {
 		typedEnv: true,
 	},
+	compress: true,
 	images: {
 		remotePatterns: [
 			{
