@@ -1,8 +1,13 @@
 // app/(dashboard)/layout.tsx
 import Sidebar from "@/components/SideBar";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
 	title: "Lorial Account",
+	robots: {
+		index: false,
+		follow: false,
+	},
 };
 
 export default function DashboardLayout({

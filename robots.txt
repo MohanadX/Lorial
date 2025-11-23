@@ -1,0 +1,16 @@
+# public/robots.txt
+User-agent: *
+
+# Allow everything by default (more specific Disallow rules below)
+Allow: /
+
+# Block search engines from indexing private image paths and sensitive routes
+Disallow: /api/images/
+Disallow: /uploads/
+Disallow: /_next/static/
+
+# Prevent indexing of user profile and account pages for privacy/security
+# This blocks paths like /user/123 and /user/settings
+Disallow: /user/
+
+# End of file

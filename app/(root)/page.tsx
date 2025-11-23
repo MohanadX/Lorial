@@ -1,6 +1,6 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
-import { EventDocument } from "@/database/event.model";
+import { EventData } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { SkeletonCardRow } from "./event/[slug]/page";
@@ -19,7 +19,6 @@ const EventsList = async () => {
 	cacheLife("minutes");
 
 	const response = await fetch(`${BASE_URL}/api/events`, {
-		cache: "force-cache",
 		next: {
 			revalidate: 60,
 		},
@@ -31,13 +30,13 @@ const EventsList = async () => {
 		);
 	}
 
-	const { events }: { events: EventDocument[] } = await response.json();
+	const { events }: { events: EventData[] } = await response.json();
 
 	return (
 		<>
 			<ul className="events list-none" id="events">
 				{events?.length > 0 &&
-					events.map((event: EventDocument) => (
+					events.map((event: EventData) => (
 						<li key={event._id}>
 							<EventCard {...event} />
 						</li>

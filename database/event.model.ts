@@ -153,6 +153,8 @@ const EventSchema = new Schema<EventDocument, Model<EventDocument>>(
 	}
 );
 
+EventSchema.index({ createdAt: 1 });
+
 // Pre-validate hook: generate/refresh slug before Mongoose runs validators
 // (required checks). We also normalize date and time here so validation sees
 // the normalized values.

@@ -26,6 +26,9 @@ BookingSchema.index({ eventId: 1 });
 // Prevent the same email from booking the same event more than once
 BookingSchema.index({ eventId: 1, email: 1 }, { unique: true });
 
+// this is for booking query inside bookings of user route (createdAt is for sorting)
+BookingSchema.index({ email: 1, createdAt: -1 });
+
 // Simple RFC-like email validation
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

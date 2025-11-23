@@ -133,7 +133,8 @@ export async function GET(req: NextRequest) {
 		const events = await Event.find()
 			.sort({ createdAt: -1 })
 			.skip(skip)
-			.limit(limit); // the newest will be first
+			.limit(limit) // the newest will be first
+			.lean(); // for performance we don't need MDB document methods
 
 		return NextResponse.json(
 			{ message: "Events Fetched Successfully", events },

@@ -1,6 +1,7 @@
 import Provider from "@/components/QueryProvider";
 import { SessionProvider } from "next-auth/react";
-import { Toaster } from "sonner";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(() => import("sonner").then((mod) => mod.Toaster), {});
 
 export default function Layout({
 	children,

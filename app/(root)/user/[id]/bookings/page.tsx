@@ -61,7 +61,7 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 		}
 
 		bookings = result.data.bookings;
-		const foundBookings = result.data.found;
+		// const foundBookings = result.data.found;
 		totalPages = result.data.totalPages;
 	} catch (err) {
 		// Log only in development

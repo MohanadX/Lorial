@@ -11,37 +11,31 @@ interface Props {
 }
 
 const EventCard = ({ title, image, slug, location, date, time }: Props) => {
+	const optimizedImage = `${image}?tr=w-410,h-300,fo-auto,f-auto,q-70`;
 	return (
-		<Link href={`/event/${slug}`} id="event-card">
+		<Link href={`/event/${slug}`} className="event-card">
 			<Image
-				src={image}
+				src={optimizedImage}
 				alt={title}
 				width={410}
 				height={300}
 				className="poster"
-				placeholder="blur"
-				blurDataURL={`${image}?tr=w-20,h-20,bl-5,q-10`}
-				priority
 			/>
 
 			<div className="flex flex-row gap-2">
-				<Image src={"/icons/pin.svg"} alt="location" width={14} height={14} />
+				{/* small images doesn't worth Image component (JS overhead) */}
+				<img src="/icons/pin.svg" alt="location" width={14} height={14} />
 				<p>{location}</p>
 			</div>
 			<p className="title">{title}</p>
 
 			<div className="datetime">
 				<div>
-					<Image
-						src={"/icons/calendar.svg"}
-						alt="date"
-						width={14}
-						height={14}
-					/>
+					<img src="/icons/calendar.svg" alt="date" width={14} height={14} />
 					<p>{date}</p>
 				</div>
 				<div>
-					<Image src={"/icons/clock.svg"} alt="time" width={14} height={14} />
+					<img src="/icons/clock.svg" alt="time" width={14} height={14} />
 					<p>{time}</p>
 				</div>
 			</div>

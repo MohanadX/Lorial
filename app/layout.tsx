@@ -45,7 +45,7 @@ const MartianMono = localFont({
 export const metadata: Metadata = {
 	title: "Lorial – Developer Community Events Hub",
 	description:
-		"The Hub For every Developers events For better Development Future",
+		"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",
 	keywords: [
 		"developer events",
 		"tech conferences",
@@ -60,8 +60,8 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "Lorial – Developer Community Events Hub",
 		description:
-			"The Hub For every Developers events For better Development Future",
-		images: [`${BASE_URL}/favicon.ico`],
+			"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",
+		images: [`/lorial.png`],
 		siteName: "Lorial",
 		url: BASE_URL,
 		type: "website",
@@ -84,16 +84,25 @@ export const metadata: Metadata = {
 			name: "Lorial",
 			url: BASE_URL,
 			description:
-				"A platform for developers to discover, share, and attend the latest developer community events.",
+				"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",
 			publisher: {
 				"@type": "Organization",
 				name: "Lorial",
 				logo: {
 					"@type": "ImageObject",
-					url: `${BASE_URL}/favicon.ico`, // your logo URL
+					url: `/lorial.png`, // your logo URL
 				},
 			},
 		}),
+	},
+	twitter: {
+		card: "summary_large_image",
+		site: "@lorial", // Your Twitter handle
+		creator: "@lorial",
+		title: "Lorial – Developer Community Events Hub",
+		description:
+			"The Hub For every Developers events For better Development Future",
+		images: [`/lorial.png`], // 1200x600px
 	},
 };
 

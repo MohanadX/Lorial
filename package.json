@@ -37,6 +37,7 @@
 	"devDependencies": {
 		"@netlify/next": "^1.4.9",
 		"@netlify/plugin-nextjs": "^5.14.5",
+		"@next/bundle-analyzer": "^16.0.3",
 		"@tailwindcss/postcss": "^4",
 		"@tanstack/react-query-devtools": "^5.87.1",
 		"@types/jsonwebtoken": "^9.0.10",
