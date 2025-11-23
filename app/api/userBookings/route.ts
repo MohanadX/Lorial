@@ -1,35 +1,16 @@
 import { BookingModel } from "@/database";
 import connectToDatabase from "@/lib/mongodb";
-import { auth } from "@/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 // Get User bookings by his email
 export async function GET(req: NextRequest) {
 	try {
-        const params = req.nextUrl.searchParams;
-        const page = Number(params.get("page") ?? 1);
+		const params = req.nextUrl.searchParams;
+		const page = Number(params.get("page") ?? 1);
 		const limit = 5;
 		const skip = limit * (page - 1); // every page show 5 bookings
 
-		// Authenticate the caller and derive the email from the trusted session
-		const session = await auth();
-		const sessionEmail = session?.user?.email as string | undefined;
-		if (!sessionEmail) {
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-		}
-
-		// If client provided an email param, only allow it for admins.
-		const requestedEmail = params.get("email");
-		const userRoles = (session?.user as any)?.roles || (session?.user as any)?.role;
-		const isAdmin =
-			(userRoles && typeof userRoles === "string" && userRoles === "admin") ||
-			(Array.isArray(userRoles) && userRoles.includes("admin"));
-
-		if (requestedEmail && requestedEmail !== sessionEmail && !isAdmin) {
-			return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-		}
-
-		const email = requestedEmail ?? sessionEmail;
+		const email = params.get("email");
 
 		// find user bookings
 		await connectToDatabase();
