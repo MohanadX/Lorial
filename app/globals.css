@@ -352,7 +352,7 @@
 }
 
 .radio-filter {
-	@apply bg-gray-500 hover:bg-gray-700 rounded-xl text-white w-20;
+	@apply bg-gray-500 hover:bg-gray-700 rounded-xl text-white w-20 cursor-pointer;
 
 	input[type="radio"] {
 		display: none;

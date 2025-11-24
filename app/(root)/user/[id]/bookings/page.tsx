@@ -9,7 +9,7 @@ const BASE_URL = process.env.BASE_URL;
 
 interface PageProps {
 	params: Promise<{ id: string }>;
-	searchParams: Promise<{ page?: string; sort: string }>;
+	searchParams: Promise<{ page?: string; sort?: string }>;
 }
 
 const Bookings = async ({ searchParams, params }: PageProps) => {

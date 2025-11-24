@@ -7,7 +7,6 @@ import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
 import connectToDatabase from "@/lib/mongodb";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -181,9 +180,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 				)}
 			</div>
 
-			<Suspense fallback={<SkeletonCardRow />}>
-				<SimilarEventsRen similarEvents={similarEvents} />
-			</Suspense>
+			<SimilarEventsRen similarEvents={similarEvents} />
 		</section>
 	);
 };
@@ -196,7 +193,7 @@ function SimilarEventsRen({ similarEvents }: { similarEvents: EventData[] }) {
 				{similarEvents.length > 0 &&
 					similarEvents.map((similarEvent) => (
 						<EventCard
-							key={similarEvent.title!}
+							key={similarEvent._id!}
 							{...(similarEvent as EventData)}
 						/>
 					))}

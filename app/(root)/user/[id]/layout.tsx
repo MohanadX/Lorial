@@ -1,4 +1,4 @@
-// app/(dashboard)/layout.tsx
+// app/(root)/user/[id]/layout.tsx
 import Sidebar from "@/components/SideBar";
 import { Metadata } from "next";
 

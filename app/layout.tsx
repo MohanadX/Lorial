@@ -90,7 +90,7 @@ export const metadata: Metadata = {
 				name: "Lorial",
 				logo: {
 					"@type": "ImageObject",
-					url: `/lorial.png`, // your logo URL
+					url: `${BASE_URL}/lorial.png`, // your logo URL
 				},
 			},
 		}),
@@ -101,8 +101,8 @@ export const metadata: Metadata = {
 		creator: "@lorial",
 		title: "Lorial – Developer Community Events Hub",
 		description:
-			"The Hub For every Developers events For better Development Future",
-		images: [`/lorial.png`], // 1200x600px
+			"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",
+		images: [`/lorial.png`], // 1200x628px recommended
 	},
 };
 

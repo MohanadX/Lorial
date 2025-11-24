@@ -35,6 +35,8 @@ export async function GET(req: NextRequest) {
 				// sort only by createdAt for latest/oldest **before lookup**
 				...(sortParam !== "upcoming" ? [{ $sort: sortStage }] : []),
 
+				{ $skip: skip },
+				{ $limit: limit },
 				// Join Event data
 				{
 					$lookup: {
@@ -54,8 +56,6 @@ export async function GET(req: NextRequest) {
 				// now sort upcoming events by event date
 				...(sortParam === "upcoming" ? [{ $sort: sortStage }] : []),
 
-				{ $skip: skip },
-				{ $limit: limit },
 				// Select only fields needed for UI
 				{
 					$project: {
@@ -118,12 +118,14 @@ export async function GET(req: NextRequest) {
 
 /*
 Optimized order
-$match → $sort → $skip → $limit → $lookup → $unwind → $project
+For latest/oldest: $match → $sort → $skip → $limit → → $lookup → $unwind → $project
+For upcoming: $match → $skip → $limit → $lookup → $unwind → $sort → $project
 (Separate count query runs in parallel via Promise.all)
 
 Why this matters
 
-- Sorting/pagination before $lookup reduces the number of documents to join
+- Sorting by createdAt (latest/oldest) can use indexes before lookup
+- Sorting by event.date (upcoming) requires lookup first since the field doesn't exist in bookings
 - Separate count query avoids re-running expensive operations
 - MongoDB can use indexes on email + createdAt for efficient sorting
 */

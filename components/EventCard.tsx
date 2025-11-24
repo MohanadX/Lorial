@@ -11,7 +11,8 @@ interface Props {
 }
 
 const EventCard = ({ title, image, slug, location, date, time }: Props) => {
-	const optimizedImage = `${image}?tr=w-410,h-300,fo-auto,f-auto,q-70`;
+	const separator = image.includes("?") ? "&" : "?";
+	const optimizedImage = `${image}${separator}tr=w-410,h-300,fo-auto,f-auto,q-70`;
 	return (
 		<Link href={`/event/${slug}`} className="event-card">
 			<Image
@@ -23,9 +24,9 @@ const EventCard = ({ title, image, slug, location, date, time }: Props) => {
 			/>
 
 			<div className="flex flex-row gap-2">
-				{/* small images doesn't worth Image component (JS overhead) */}
+				{/* small images don't justify Image component overhead */}
 				<img src="/icons/pin.svg" alt="location" width={14} height={14} />
-				<p>{location}</p>
+				<p>{location}</p>{" "}
 			</div>
 			<p className="title">{title}</p>
 

@@ -1,12 +1,17 @@
+"use client";
+
 import clsx from "clsx";
 import { Route } from "next";
-import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 interface FiltersProps {
 	searchParams: { page?: string; sort?: string };
 }
 
 const BookingFilters = ({ searchParams }: FiltersProps) => {
+	const router = useRouter();
+	const pathname = usePathname() || "/";
+
 	const currentSort = searchParams.sort ?? "latest";
 
 	const buildUrl = (sortValue: string) => {
@@ -15,12 +20,21 @@ const BookingFilters = ({ searchParams }: FiltersProps) => {
 		params.set("sort", sortValue);
 		params.set("page", "1"); // reset pagination on sort change
 
-		return `?${params.toString()}`;
+		return `${pathname}?${params.toString()}`;
+	};
+
+	const onChange = (value: string) => {
+		const url = buildUrl(value);
+		router.push(url as Route);
 	};
 
 	return (
-		<fieldset className="mt-5 flex justify-center gap-3 text-center">
-			<legend className="font-semibold mb-2">Sort bookings by</legend>
+		<fieldset
+			className="mt-5 flex justify-center gap-3 text-center"
+			role="radiogroup"
+			aria-label="Sort bookings by"
+		>
+			<legend className="sr-only">Sort bookings by</legend>
 
 			<label
 				className={clsx(
@@ -31,11 +45,14 @@ const BookingFilters = ({ searchParams }: FiltersProps) => {
 				<input
 					type="radio"
 					name="sort"
-					className="peer hidden"
+					className="peer"
 					checked={currentSort === "latest"}
-					readOnly
+					onChange={() => onChange("latest")}
+					aria-checked={currentSort === "latest"}
 				/>
-				<Link href={buildUrl("latest") as Route}>Latest</Link>
+				<span role="button" tabIndex={0} onClick={() => onChange("latest")}>
+					Latest
+				</span>
 			</label>
 
 			<label
@@ -48,9 +65,12 @@ const BookingFilters = ({ searchParams }: FiltersProps) => {
 					type="radio"
 					name="sort"
 					checked={currentSort === "oldest"}
-					readOnly
+					onChange={() => onChange("oldest")}
+					aria-checked={currentSort === "oldest"}
 				/>
-				<Link href={buildUrl("oldest") as Route}>Oldest</Link>
+				<span role="button" tabIndex={0} onClick={() => onChange("oldest")}>
+					Oldest
+				</span>
 			</label>
 
 			<label
@@ -63,9 +83,12 @@ const BookingFilters = ({ searchParams }: FiltersProps) => {
 					type="radio"
 					name="sort"
 					checked={currentSort === "upcoming"}
-					readOnly
+					onChange={() => onChange("upcoming")}
+					aria-checked={currentSort === "upcoming"}
 				/>
-				<Link href={buildUrl("upcoming") as Route}>Upcoming</Link>
+				<span role="button" tabIndex={0} onClick={() => onChange("upcoming")}>
+					Upcoming
+				</span>
 			</label>
 		</fieldset>
 	);
