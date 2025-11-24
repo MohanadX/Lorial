@@ -23,6 +23,7 @@ export default function Sidebar() {
 		{
 			label: "Bookings",
 			href: `${userBase}/bookings`,
+			query: { sort: "latest" },
 			icon: <FaCalendarCheck />,
 		},
 	];
@@ -50,7 +51,7 @@ export default function Sidebar() {
 						{menuItems.map((item) => (
 							<Link
 								key={item.href}
-								href={{ pathname: item.href }}
+								href={{ pathname: item.href, query: item.query || null }}
 								className={`flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition ${
 									// Treat a menu item as active when the current pathname matches either
 									// the full href (rare) or the href without query params.

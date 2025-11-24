@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import BookingFilters from "@/components/BookingFilters";
 import BookingSlice, { Booking_Event } from "@/components/BookingSlice";
 import Pagination from "@/components/Pagination";
 
@@ -8,12 +9,12 @@ const BASE_URL = process.env.BASE_URL;
 
 interface PageProps {
 	params: Promise<{ id: string }>;
-	searchParams: Promise<{ page?: string }>;
+	searchParams: Promise<{ page?: string; sort: string }>;
 }
 
 const Bookings = async ({ searchParams, params }: PageProps) => {
 	const userId = (await params).id;
-	const { page: pageNumber } = await searchParams;
+	const { page: pageNumber, sort } = await searchParams;
 	const page = Number(pageNumber ?? 1);
 
 	const session = await auth();
@@ -47,7 +48,7 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 
 	try {
 		const result = await axios.get(`${BASE_URL}/api/userBookings/`, {
-			params: { email: session.user.email, page },
+			params: { email: session.user.email, page, sort },
 			timeout: 10000, // 10 second timeout
 		});
 		// Basic response shape validation
@@ -82,6 +83,7 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 	return (
 		<div className="text-center">
 			<h1>Your Bookings</h1>
+			<BookingFilters searchParams={{ page: pageNumber, sort }} />
 			{bookings.length > 0 ? (
 				<ul className="list-none mx-auto max-w-xl mt-5">
 					{bookings.map((book: Booking_Event) => (

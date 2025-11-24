@@ -11,6 +11,19 @@ export async function GET(req: NextRequest) {
 		const skip = limit * (page - 1); // every page show 5 bookings
 
 		const email = params.get("email");
+		const sortParam = params.get("sort") ?? "latest";
+
+		// determine sort order based on query param
+		let sortStage: any = {};
+
+		if (sortParam === "latest") {
+			sortStage = { createdAt: -1 };
+		} else if (sortParam === "oldest") {
+			sortStage = { createdAt: 1 };
+		} else if (sortParam === "upcoming") {
+			// will sort by event.date after lookup
+			sortStage = { "event.date": 1 };
+		}
 
 		// find user bookings
 		await connectToDatabase();
@@ -19,10 +32,8 @@ export async function GET(req: NextRequest) {
 				// Filter by logged-in user's email
 				{ $match: { email } },
 
-				// Sort newest booking first
-				{ $sort: { createdAt: -1 } },
-				{ $skip: skip },
-				{ $limit: limit },
+				// sort only by createdAt for latest/oldest **before lookup**
+				...(sortParam !== "upcoming" ? [{ $sort: sortStage }] : []),
 
 				// Join Event data
 				{
@@ -40,6 +51,11 @@ export async function GET(req: NextRequest) {
 				// Convert event array → single object (flatten it)
 				{ $unwind: "$event" },
 
+				// now sort upcoming events by event date
+				...(sortParam === "upcoming" ? [{ $sort: sortStage }] : []),
+
+				{ $skip: skip },
+				{ $limit: limit },
 				// Select only fields needed for UI
 				{
 					$project: {
