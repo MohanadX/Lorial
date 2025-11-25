@@ -19,21 +19,20 @@ async function fetchEventsPage(params: { pageParam?: number }) {
 	const skip = params.pageParam ?? 0;
 	const limit = 6;
 
-	const response = await axios.get<{ events: EventData[] }>(
+	const response = await axios.get<{ events: EventData[]; totalCount: number }>(
 		`${BASE_URL}/api/events`,
 		{
 			params: { skip, limit },
 		}
 	);
-
-	const events = response.data.events;
+	const { events, totalCount } = response.data;
 
 	// Figure out the next skip (i.e. next pageParam)
-	const nextSkip = events.length < limit ? null : skip + events.length;
+	const fullyLoaded = skip + events.length >= totalCount;
 
 	return {
 		events,
-		nextSkip,
+		nextSkip: fullyLoaded ? null : skip + events.length,
 	};
 }
 

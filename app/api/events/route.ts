@@ -130,14 +130,17 @@ export async function GET(req: NextRequest) {
 		const skip = Number(searchParams.get("skip") || 0);
 		const limit = Math.min(Number(searchParams.get("limit") || 6), 10);
 
-		const events = await Event.find()
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limit) // the newest will be first
-			.lean(); // for performance we don't need MDB document methods
+		const [events, totalCount] = await Promise.all([
+			Event.find()
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit) // the newest will be first
+				.lean(), // for performance we don't need MDB document methods
+			Event.countDocuments(),
+		]);
 
 		return NextResponse.json(
-			{ message: "Events Fetched Successfully", events },
+			{ message: "Events Fetched Successfully", events, totalCount },
 			{ status: 200 }
 		);
 	} catch (e) {
