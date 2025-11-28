@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 		title: "Lorial – Developer Community Events Hub",
 		description:
 			"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",
-		images: [`/lorial.png`],
+		images: [`/icons/lorial.png`],
 		siteName: "Lorial",
 		url: BASE_URL,
 		type: "website",
@@ -92,7 +92,7 @@ export const metadata: Metadata = {
 				name: "Lorial",
 				logo: {
 					"@type": "ImageObject",
-					url: `${BASE_URL}/lorial.png`, // your logo URL
+					url: `/icons/lorial.png`, // your logo URL
 				},
 			},
 		}),
@@ -104,7 +104,7 @@ export const metadata: Metadata = {
 		title: "Lorial – Developer Community Events Hub",
 		description:
 			"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",
-		images: [`/lorial.png`], // 1200x628px recommended
+		images: [`/icons/lorial.png`], // 1200x628px recommended
 	},
 };
 
