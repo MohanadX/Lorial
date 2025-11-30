@@ -52,6 +52,10 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 			timeout: 10000, // 10 second timeout
 		});
 		// Basic response shape validation
+		console.log(result);
+		console.log(result.data);
+		console.log(Array.isArray(result.data.bookings));
+		console.log(typeof result.data.totalPages !== "number");
 		if (
 			!result ||
 			!result.data ||
@@ -71,12 +75,12 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 		}
 
 		return (
-			<div className="max-w-2xl max-md:max-w-xl h-40 text-center">
+			<>
 				<h1 className="text-xl font-semibold">Error</h1>
 				<p className="mt-2 text-gray-500">
 					Unable to load your bookings. Please try again later.
 				</p>
-			</div>
+			</>
 		);
 	}
 

@@ -1,6 +1,7 @@
 import { BookingModel } from "@/database";
 import connectToDatabase from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
+import z from "zod";
 
 // Get User bookings by his email
 export async function GET(req: NextRequest) {
@@ -11,6 +12,15 @@ export async function GET(req: NextRequest) {
 		const skip = limit * (page - 1); // every page show 5 bookings
 
 		const email = params.get("email");
+
+		const emailValidation = z
+			.object({
+				email: z.email({ error: "Invalid Email" }),
+			})
+			.safeParse({ email });
+		if (!emailValidation.success) {
+			return NextResponse.json({ message: "Invalid Email", status: 400 });
+		}
 		const sortParam = params.get("sort") ?? "latest";
 
 		// determine sort order based on query param

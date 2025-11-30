@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import UserAvatar from "./UserAvatar";
+import UserAvatarClientWrapper from "./UserAvatarClientWrapper";
 
 const Navbar = async () => {
 	return (
@@ -18,7 +18,8 @@ const Navbar = async () => {
 					<li>
 						<Link href={"/"}>Events</Link>
 					</li>
-					<UserAvatar />
+
+					<UserAvatarClientWrapper />
 				</ul>
 			</nav>
 		</header>
