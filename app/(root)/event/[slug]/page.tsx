@@ -21,7 +21,7 @@ const EventDetailsItem = ({
 }) => {
 	return (
 		<div className="flex gap-2">
-			<Image src={icon} alt={alt} width={17} height={17} />
+			<img src={icon} alt={alt} width={17} height={17} loading="lazy" />
 			<p>{label}</p>
 		</div>
 	);
@@ -134,7 +134,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 						<h2>Event Details</h2>
 
 						<EventDetailsItem
-							icon="/icons/calendar.svg"
+							icon="/icons/calendar.webp"
 							alt="calendar"
 							label={date}
 						/>
