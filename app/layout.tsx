@@ -44,7 +44,7 @@ const MartianMono = localFont({
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL(BASE_URL!),
+	metadataBase: new URL(BASE_URL || "http://localhost:3000"),
 	title: "Lorial – Developer Community Events Hub",
 	description:
 		"Discover and join developer events, tech conferences, and community meetups. Connect with frontend, AI, DevOps, and Kubernetes professionals worldwide.",

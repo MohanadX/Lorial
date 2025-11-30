@@ -9,7 +9,7 @@ const UserAvatar = () => {
 	return (
 		<li>
 			{session ? (
-				<Link href={`/user/${session.user.id}`}>
+				<Link href={`/user/${session.user?.id}`}>
 					<Image
 						src={session.user?.image ?? "/icons/avatar-placeholder.png"}
 						alt={session.user?.name ?? "User profile"}

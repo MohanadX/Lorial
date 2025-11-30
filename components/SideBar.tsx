@@ -40,11 +40,11 @@ export default function Sidebar() {
 
 			{/* Sidebar */}
 			<aside
-				className={`fixed mr-6 top-0 left-0 h-[500px] w-64 bg-black border-r border-gray-600 transform transition-transform duration-300 ease-in-out z-40 
+				className={`fixed mr-6 top-0 max-md:h-full h-[450px] left-0 w-64 bg-black border-r border-gray-600 transform transition-transform duration-300 ease-in-out z-40 
 				${isOpen ? "translate-x-0" : "-translate-x-full"} 
 				md:translate-x-0 md:relative`}
 			>
-				<div className="flex flex-col h-full">
+				<div className="flex flex-col">
 					<h2 className="text-xl font-bold mb-6 text-white">Lorial Menu</h2>
 
 					<nav className="flex flex-col max-md:mt-10 gap-3">
@@ -70,7 +70,7 @@ export default function Sidebar() {
 						))}
 					</nav>
 
-					<div className="mt-auto p-4 text-gray-400 text-sm">
+					<div className="mt-auto absolute bottom-0 p-4 text-gray-400 text-sm">
 						© {new Date().getFullYear()} Lorial
 					</div>
 				</div>

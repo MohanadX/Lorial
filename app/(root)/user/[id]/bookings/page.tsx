@@ -52,10 +52,6 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 			timeout: 10000, // 10 second timeout
 		});
 		// Basic response shape validation
-		console.log(result);
-		console.log(result.data);
-		console.log(Array.isArray(result.data.bookings));
-		console.log(typeof result.data.totalPages !== "number");
 		if (
 			!result ||
 			!result.data ||
@@ -86,7 +82,7 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 
 	return (
 		<div className="text-center">
-			<h1>Your Bookings</h1>
+			<h1 className="h-[72px]">Your Bookings</h1>
 			<BookingFilters searchParams={{ page: pageNumber, sort }} />
 			{bookings.length > 0 ? (
 				<ul className="list-none mx-auto max-w-xl mt-5">

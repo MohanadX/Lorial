@@ -7,7 +7,7 @@ export default async function UserPage() {
 	const session = await auth();
 	return (
 		<div className="max-w‑2xl max-md:max-w-xl text-center md:p-6">
-			<h1 className="text‑2xl text-center font‑bold mb‑4">Edit Profile</h1>
+			<h1 className="text‑2xl mb-3 text-center font‑bold mb‑4">Edit Profile</h1>
 			{/* 3 inputs for changing user data */}
 			<div className="mx-auto w-100 mt-5">
 				<h2 className="mt-3 ">User {session?.user.name}</h2>

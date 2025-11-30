@@ -18,12 +18,7 @@ const EventsList = async () => {
 	"use cache: remote";
 	cacheLife("minutes");
 
-	const response = await fetch(`${BASE_URL}/api/events`, {
-		next: {
-			revalidate: 60,
-		},
-	});
-
+	const response = await fetch(`${BASE_URL}/api/events`);
 	if (!response.ok) {
 		throw new Error(
 			`Failed to fetch events: ${response.status} ${response.statusText}`

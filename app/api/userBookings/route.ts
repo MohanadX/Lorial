@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
 			})
 			.safeParse({ email });
 		if (!emailValidation.success) {
-			return NextResponse.json({ message: "Invalid Email", status: 400 });
+			return NextResponse.json({ message: "Invalid Email" }, { status: 400 });
 		}
 		const sortParam = params.get("sort") ?? "latest";
 
@@ -43,10 +43,10 @@ export async function GET(req: NextRequest) {
 				{ $match: { email } },
 
 				// sort only by createdAt for latest/oldest **before lookup**
-				...(sortParam !== "upcoming" ? [{ $sort: sortStage }] : []),
+				...(sortParam !== "upcoming"
+					? [{ $sort: sortStage }, { $skip: skip }, { $limit: limit }]
+					: []),
 
-				{ $skip: skip },
-				{ $limit: limit },
 				// Join Event data
 				{
 					$lookup: {
@@ -64,8 +64,9 @@ export async function GET(req: NextRequest) {
 				{ $unwind: "$event" },
 
 				// now sort upcoming events by event date
-				...(sortParam === "upcoming" ? [{ $sort: sortStage }] : []),
-
+				...(sortParam === "upcoming"
+					? [{ $sort: sortStage }, { $skip: skip }, { $limit: limit }]
+					: []),
 				// Select only fields needed for UI
 				{
 					$project: {

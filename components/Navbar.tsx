@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import UserAvatarClientWrapper from "./UserAvatarClientWrapper";
 
-const Navbar = async () => {
+const Navbar = () => {
 	return (
 		<header>
 			<nav>

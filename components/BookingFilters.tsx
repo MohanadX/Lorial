@@ -15,8 +15,7 @@ const BookingFilters = ({ searchParams }: FiltersProps) => {
 	const currentSort = searchParams.sort ?? "latest";
 
 	const buildUrl = (sortValue: string) => {
-		const params = new URLSearchParams(searchParams as any);
-
+		const params = new URLSearchParams(searchParams as Record<string, string>);
 		params.set("sort", sortValue);
 		params.set("page", "1"); // reset pagination on sort change
 

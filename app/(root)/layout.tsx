@@ -1,6 +1,6 @@
 import Provider from "@/components/QueryProvider";
 import dynamic from "next/dynamic";
-const Toaster = dynamic(() => import("sonner").then((mod) => mod.Toaster), {});
+const Toaster = dynamic(() => import("sonner").then((mod) => mod.Toaster));
 
 export default function Layout({
 	children,
