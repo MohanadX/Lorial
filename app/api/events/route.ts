@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
 		// Validate file type
 		const allowedTypes = [
 			"image/jpeg",
+			"image/jpg",
 			"image/png",
 			"image/webp",
 			"image/gif",
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json(
 				{
 					message:
-						"Invalid file type. Only JPEG, PNG, WebP, Avif, and GIF are allowed",
+						"Invalid file type. Only JPEG, JPG,  PNG, WebP, Avif, and GIF are allowed",
 				},
 				{ status: 400 }
 			);
@@ -128,7 +129,7 @@ export async function GET(req: NextRequest) {
 		const { searchParams } = new URL(req.url);
 
 		const skip = Number(searchParams.get("skip") || 0);
-		const limit = Math.min(Number(searchParams.get("limit") || 6), 10);
+		const limit = Math.min(Number(searchParams.get("limit") || 3), 10);
 
 		const [events, totalCount] = await Promise.all([
 			Event.find()
@@ -144,6 +145,7 @@ export async function GET(req: NextRequest) {
 			{ status: 200 }
 		);
 	} catch (e) {
+		console.log(e)
 		return NextResponse.json(
 			{ message: "Event Fetching failed", error: e },
 			{ status: 500 }
