@@ -31,11 +31,12 @@ export async function GET(req: NextRequest) {
 		} else if (sortParam === "oldest") {
 			sortStage = { createdAt: 1 };
 		} else if (sortParam === "upcoming") {
-			// will sort by event.date after lookup
+			// 1 means closest/nearest future date first
 			sortStage = { "event.date": 1 };
 		}
 
 		// find user bookings
+		const now = new Date().toISOString().split("T")[0]; // must be ISO string format
 		await connectToDatabase();
 		const [result, bookingAmount] = await Promise.all([
 			BookingModel.aggregate([
@@ -48,17 +49,29 @@ export async function GET(req: NextRequest) {
 					: []),
 
 				// Join Event data
-				{
-					$lookup: {
-						from: "events",
-						let: { eventId: "$eventId" },
-						pipeline: [
-							{ $match: { $expr: { $eq: ["$_id", "$$eventId"] } } },
-							{ $project: { title: 1, slug: 1, date: 1 } },
-						],
-						as: "event",
-					},
-				},
+                {
+                    $lookup: {
+                        from: "events",
+                        let: { eventId: "$eventId" },
+                        pipeline: [
+                            { 
+                                $match: { 
+                                    $expr: { 
+                                        $and: [
+                                            { $eq: ["$_id", "$$eventId"] },
+                                            // If "upcoming", filter out events where date is less than now
+                                            ...(sortParam === "upcoming"
+                                                ? [{ $gte: ["$date", now] }]
+                                                : [])
+                                        ]
+                                    }
+                                }
+                            },
+                            { $project: { title: 1, slug: 1, date: 1 } },
+                        ],
+                        as: "event",
+                    },
+                },
 
 				// Convert event array → single object (flatten it)
 				{ $unwind: "$event" },
