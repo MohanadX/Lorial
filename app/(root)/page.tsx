@@ -24,17 +24,10 @@ const EventsList = async () => {
 		const response = await axios.get<{events: EventData[]}>(`${BASE_URL}/api/events`, {
 			timeout: 60000 // 60 seconds
 		});
-		const { events: res } = response.data;
-		if (!res.length) {
-			throw new Error(
-				`Failed to fetch events: ${response.status} ${response.statusText}`
-			);
-		}
-
-		events = res;
+		events = response.data.events;
 	} catch (error) {
 		console.error("Events request failed", error);
-		return;
+		throw error;
 	}
 
 
@@ -42,12 +35,17 @@ const EventsList = async () => {
 		<>
 			<div className="events" id="events">
 				<ul className="list-none">
-					{events?.length > 0 &&
+					{events?.length > 0 ? (
 						events.map((event: EventData) => (
 							<li key={event._id}>
 								<EventCard {...event} />
 							</li>
-						))}
+						))
+					) : (
+						<p className="text-center text-gray-500 col-span-full">
+							No events found.
+						</p>
+					)}
 				</ul>
 				<LoadEvents initialSkip={events.length} />
 			</div>
