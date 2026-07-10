@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
 		const { searchParams } = new URL(req.url);
 
 		const skip = Number(searchParams.get("skip") || 0);
-		const limit = Math.min(Number(searchParams.get("limit") || 3), 10);
+		const limit = Math.min(Number(searchParams.get("limit") || 4), 10);
 
 		const [events, totalCount] = await Promise.all([
 			Event.find()

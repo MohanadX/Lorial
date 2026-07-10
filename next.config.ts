@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
 		ignoreBuildErrors: true,
 	},
 	reactCompiler: true,
+	reactStrictMode: true,
 	experimental: {
 		typedEnv: true,
 	},

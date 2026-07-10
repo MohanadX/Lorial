@@ -1,10 +1,9 @@
 "use client";
 
 import { authenticate } from "@/lib/actions/user.actions";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { NextResponse } from "next/server";
 import { useActionState, useState } from "react";
 
 export type State = {

@@ -1,7 +1,8 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
 import { EventData } from "@/database/event.model";
-import { cacheLife } from "next/cache";
+import { cacheLife, revalidatePath } from "next/cache";
+import axios from "axios";
 import { Suspense } from "react";
 import { SkeletonCardRow } from "./event/[slug]/page";
 import dynamic from "next/dynamic";
@@ -18,27 +19,38 @@ const EventsList = async () => {
 	"use cache: remote";
 	cacheLife("minutes");
 
-	const response = await fetch(`${BASE_URL}/api/events`);
-	if (!response.ok) {
-		throw new Error(
-			`Failed to fetch events: ${response.status} ${response.statusText}`
-		);
+	let events: EventData[] = [];
+	try {
+		const response = await axios.get<{events: EventData[]}>(`${BASE_URL}/api/events`, {
+			timeout: 60000 // 60 seconds
+		});
+		const { events: res } = response.data;
+		if (!res.length) {
+			throw new Error(
+				`Failed to fetch events: ${response.status} ${response.statusText}`
+			);
+		}
+
+		events = res;
+	} catch (error) {
+		console.error("Events request failed", error);
+		return;
 	}
 
-	const { events }: { events: EventData[] } = await response.json();
 
 	return (
 		<>
-			<ul className="events list-none" id="events">
-				{events?.length > 0 &&
-					events.map((event: EventData) => (
-						<li key={event._id}>
-							<EventCard {...event} />
-						</li>
-					))}
-			</ul>
-			{/* Load More */}
-			<LoadEvents initialSkip={events.length} />
+			<div className="events" id="events">
+				<ul className="list-none">
+					{events?.length > 0 &&
+						events.map((event: EventData) => (
+							<li key={event._id}>
+								<EventCard {...event} />
+							</li>
+						))}
+				</ul>
+				<LoadEvents initialSkip={events.length} />
+			</div>
 		</>
 	);
 };

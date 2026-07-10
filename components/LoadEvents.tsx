@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useTransition } from "react";
 import EventCard from "./EventCard";
 import { EventData } from "@/database/event.model";
 import axios from "axios";
@@ -38,6 +38,7 @@ async function fetchEventsPage(params: { pageParam?: number }) {
 
 const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 	const [firstLoad, setFirstLoad] = useState(false);
+	const [, startTransition] = useTransition()
 	const {
 		data,
 		fetchNextPage,
@@ -64,7 +65,7 @@ const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 	// console.log({ ...data }, status);
 	return (
 		<>
-			<ul className="events list-none mt-4">
+			<ul className="list-none">
 				{data?.pages.map((page, index) => (
 					<Fragment key={index}>
 						{page.events.map((event) => (
@@ -79,7 +80,9 @@ const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 			<button
 				onClick={() => {
 					if (!firstLoad) setFirstLoad(true); // trigger first fetch
-					fetchNextPage();
+					startTransition(() => {
+						fetchNextPage();
+					});
 				}}
 				className="load-more flex justify-center items-center gap-2 px-4 py-2 border rounded-md  hover:bg-gray-800 disabled:opacity-50"
 				disabled={isFetchingNextPage || (firstLoad && !hasNextPage)}

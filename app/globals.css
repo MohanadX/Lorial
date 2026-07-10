@@ -139,9 +139,12 @@
 		}
 	}
 
-	#explore-btn,
-	.load-more {
+	#explore-btn {
 		@apply border-dark-200 bg-dark-100 flex w-fit cursor-pointer mx-auto  rounded-full border px-8 py-3.5 max-sm:w-full text-center;
+	}
+
+	.load-more {
+		@apply absolute left-1/2 -bottom-6 -translate-x-1/2 border-dark-200 bg-dark-100 flex w-fit cursor-pointer mx-auto  rounded-full border px-8 py-3.5 max-sm:w-full text-center;
 
 		a {
 			@apply flex-center gap-2 text-center w-full;
@@ -169,7 +172,10 @@
 	}
 
 	.events {
-		@apply grid md:grid-cols-3 gap-10 sm:grid-cols-2 grid-cols-1;
+		@apply relative pb-12 grid md:grid-cols-3 gap-10 sm:grid-cols-2 grid-cols-1;
+		ul {
+			display: contents;
+		}
 	}
 
 	#event-card,

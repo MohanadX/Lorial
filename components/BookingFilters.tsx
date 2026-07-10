@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 interface FiltersProps {
 	searchParams: { page?: string; sort?: string };
@@ -11,6 +12,7 @@ interface FiltersProps {
 const BookingFilters = ({ searchParams }: FiltersProps) => {
 	const router = useRouter();
 	const pathname = usePathname() || "/";
+	const [isPending, startTransition] = useTransition();
 
 	const currentSort = searchParams.sort ?? "latest";
 
@@ -24,7 +26,9 @@ const BookingFilters = ({ searchParams }: FiltersProps) => {
 
 	const onChange = (value: string) => {
 		const url = buildUrl(value);
-		router.push(url as Route);
+		startTransition(() => {
+			router.push(url as Route);
+		});
 	};
 
 	return (
