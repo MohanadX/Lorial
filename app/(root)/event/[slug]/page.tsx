@@ -1,12 +1,15 @@
 import { auth } from "@/auth";
-import BookEvent from "@/components/BookEvent";
-import EventCard from "@/components/EventCard";
 import { BookingModel } from "@/database";
 import { EventData } from "@/database/event.model";
 import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
 import connectToDatabase from "@/lib/mongodb";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+const BookEvent = dynamic(() => import("@/components/BookEvent")); // for already booked event
+const EventCard = dynamic(() => import("@/components/EventCard"), {
+	loading: () => <SkeletonCardRow />,
+}); // if there are no similar events
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -65,6 +68,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 		}
 	);
 	const sessionPromise = auth();
+	const dbConnection = connectToDatabase()
 
 	// Await all and fetch immediately
 	const [request, session, similarEvents] = await Promise.all([
@@ -72,9 +76,9 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 		sessionPromise,
 		getSimilarEventBySlug(slug),
 	]);
+
 	const {
 		event: {
-			title,
 			description,
 			image,
 			overview,
@@ -99,7 +103,7 @@ const Event = async ({ params }: { params: Promise<{ slug: string }> }) => {
 	let isBooked = null;
 
 	if (session?.user) {
-		await connectToDatabase();
+		await dbConnection;
 		isBooked = await BookingModel.findOne({
 			eventId: _id,
 			email: session.user.email,

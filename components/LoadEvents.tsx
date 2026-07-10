@@ -64,7 +64,7 @@ const LoadEvents = ({ initialSkip }: { initialSkip: number }) => {
 	// console.log({ ...data }, status);
 	return (
 		<>
-			<ul className="events list-none mt-4">
+			<ul className="list-none">
 				{data?.pages.map((page, index) => (
 					<Fragment key={index}>
 						{page.events.map((event) => (

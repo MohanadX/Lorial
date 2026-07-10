@@ -20,7 +20,7 @@ export default async function UserPage() {
 				<Form
 					action={async () => {
 						"use server";
-						await signOut({ redirectTo: "/?logout=success" });
+						await signOut({redirectTo: "/?logout=success"});
 					}}
 					className="text-center"
 				>

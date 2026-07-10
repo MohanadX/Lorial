@@ -1,9 +1,11 @@
 import { auth } from "@/auth";
 import BookingFilters from "@/components/BookingFilters";
 import BookingSlice, { Booking_Event } from "@/components/BookingSlice";
-import Pagination from "@/components/Pagination";
 
 import axios from "axios";
+import dynamic from "next/dynamic";
+
+const Pagination = dynamic(() => import("@/components/Pagination"));
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -13,6 +15,7 @@ interface PageProps {
 }
 
 const Bookings = async ({ searchParams, params }: PageProps) => {
+	
 	const userId = (await params).id;
 	const { page: pageNumber, sort } = await searchParams;
 	const page = Number(pageNumber ?? 1);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 // Optional: you can just import toast directly if tree-shaking isn't a concern.
@@ -22,20 +22,23 @@ export default function LoginToast({
 	login?: string;
 	logout?: string;
 }) {
+	const [, startTransition] = useTransition()
 	const router = useRouter();
 
 	useEffect(() => {
-		(async () => {
+		startTransition(async () => {
 			if (login === "success") {
 				const toast = await getToast();
 				toast.success("🎉 Your login was successful!");
+				router.refresh();
 				router.replace("/", { scroll: false });
 			} else if (logout === "success") {
 				const toast = await getToast();
 				toast.info("👋 Signed out successfully!");
+				router.refresh();
 				router.replace("/", { scroll: false });
 			}
-		})();
+		});
 	}, [login, logout, router]); // <-- add logout to deps
 
 	return null;
