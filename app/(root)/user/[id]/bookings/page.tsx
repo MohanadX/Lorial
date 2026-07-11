@@ -88,7 +88,7 @@ const Bookings = async ({ searchParams, params }: PageProps) => {
 			<h1 className="h-[72px]">Your Bookings</h1>
 			<BookingFilters searchParams={{ page: pageNumber, sort }} />
 			{bookings.length > 0 ? (
-				<ul className="list-none mx-auto max-w-xl mt-5">
+				<ul className="list-none mx-auto max-w-xl mt-5 pb-2">
 					{bookings.map((book: Booking_Event) => (
 						<li key={book?._id} className="move">
 							<BookingSlice {...book} />
