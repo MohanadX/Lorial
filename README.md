@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎟️ Lorial
 
-## Getting Started
+A modern, full-stack event booking and management platform built with **Next.js 16**, React 19, and MongoDB. Lorial provides a seamless experience for users to discover and book events, manage their profiles, and track their bookings.
 
-First, run the development server:
+<div align="center">
+  <img src="/public/images/lorial.jpg" alt="Lorial Preview" />
+</div>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Key Features
+
+- **Event Discovery**: Browse and view detailed information about upcoming events.
+- **Seamless Booking**: Easy-to-use event booking system for attendees.
+- **User Dashboard**: Manage your profile and view your booking history in one place.
+- **Secure Authentication**: Robust user authentication and session management powered by NextAuth.js.
+- **Optimized Media**: Integrated with ImageKit for fast, efficient image delivery.
+- **Analytics & Insights**: Built-in user tracking and product analytics using PostHog.
+- **Type Safety**: End-to-end type safety with TypeScript and Zod schema validation.
+
+## 🚀 Tech Stack
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **Frontend**: React 19, Tailwind CSS v4, Lucide React
+- **State & Data Fetching**: React Query, Axios
+- **Backend**: Next.js API Routes & Server Actions
+- **Database**: [MongoDB](https://www.mongodb.com/) (Mongoose)
+- **Authentication**: [NextAuth.js v5](https://authjs.dev/)
+- **Analytics**: [PostHog](https://posthog.com/)
+- **Media Management**: [ImageKit](https://imagekit.io/)
+- **Validation**: [Zod](https://zod.dev/)
+
+## 📁 Project Structure
+
+```text
+├── app/                  # Next.js App Router pages and API routes
+├── components/           # Reusable UI components
+├── database/             # Mongoose schemas and database connection logic
+├── lib/                  # Utility functions, Server Actions, and shared logic
+├── public/               # Static assets
+└── tailwind.config.ts    # Tailwind CSS configuration (if applicable)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js (v18 or higher recommended)
+- npm, yarn, pnpm, or bun
+- MongoDB Database
 
-## Learn More
+### Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env.local` file in the root directory and add your required environment variables. Based on the tech stack, you will likely need to configure the following:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+# Database
+MONGODB_URI=your_mongodb_connection_string
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# NextAuth
+AUTH_SECRET=your_nextauth_secret
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-## Deploy on Vercel
+# Analytics (PostHog)
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
+NEXT_PUBLIC_POSTHOG_HOST=your_posthog_host
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# ImageKit
+NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=your_imagekit_url
+NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/lorial.git
+   cd lorial
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application in action.
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+## Developer
+
+**Mohanad Ayoub** [GitHub profile](https://github.com/zlmohanadlz) - [Linkedin Profile](https://www.linkedin.com/in/mohanad-ayoub-55bb29382)
