@@ -36,7 +36,7 @@
   "devDependencies": {
     "@netlify/next": "^1.4.9",
     "@netlify/plugin-nextjs": "^5.14.5",
-    "@next/bundle-analyzer": "^16.0.3",
+    "@next/bundle-analyzer": "^16.3.1",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.87.1",
     "@types/jsonwebtoken": "^9.0.10",
@@ -44,7 +44,7 @@
     "@types/nodemailer": "^7.0.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "baseline-browser-mapping": "^2.11.0",
+    "baseline-browser-mapping": "^2.11.14",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "tailwindcss": "^4",
