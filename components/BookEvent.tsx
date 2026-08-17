@@ -2,6 +2,7 @@
 
 import { createBooking } from "@/lib/actions/booking.actions";
 import { cn } from "@/lib/utils";
+import { captureException } from "@/posthog-server";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -45,7 +46,9 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
       } else {
         setError(error || "Booking Creation Failed");
         toast.error("Your booking creation has failed");
-        posthog.captureException("Booking Creation Failed");
+        captureException(
+          `Booking Creation Failed:${error ? error : "Unknown Error"}`,
+        );
       }
     } finally {
       setSubmitting(false);

@@ -10,97 +10,96 @@ const Pagination = dynamic(() => import("@/components/Pagination"));
 const BASE_URL = process.env.BASE_URL;
 
 interface PageProps {
-	params: Promise<{ id: string }>;
-	searchParams: Promise<{ page?: string; sort?: string }>;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string; sort?: string }>;
 }
 
 const Bookings = async ({ searchParams, params }: PageProps) => {
-	
-	const userId = (await params).id;
-	const { page: pageNumber, sort } = await searchParams;
-	const page = Number(pageNumber ?? 1);
+  const userId = (await params).id;
+  const { page: pageNumber, sort } = await searchParams;
+  const page = Number(pageNumber ?? 1);
 
-	const session = await auth();
+  const session = await auth();
 
-	// Guard: require authenticated session with email
-	if (!session?.user?.email) {
-		return (
-			<div className="max-w-2xl max-md:max-w-xl h-40 text-center">
-				<h1 className="text-xl font-semibold">Unauthorized</h1>
-				<p className="mt-2 text-gray-500">
-					Please sign in to view your bookings.
-				</p>
-			</div>
-		);
-	}
+  // Guard: require authenticated session with email
+  if (!session?.user?.email) {
+    return (
+      <div className="max-w-2xl max-md:max-w-xl h-40 text-center">
+        <h1 className="text-xl font-semibold">Unauthorized</h1>
+        <p className="mt-2 text-gray-500">
+          Please sign in to view your bookings.
+        </p>
+      </div>
+    );
+  }
 
-	// Guard: userId in the route must match the authenticated user's id
-	if (userId !== session.user.id) {
-		return (
-			<div className="max-w-2xl max-md:max-w-xl h-40 text-center">
-				<h1 className="text-xl font-semibold">Forbidden</h1>
-				<p className="mt-2 text-gray-500">
-					You don't have permission to view these bookings.
-				</p>
-			</div>
-		);
-	}
+  // Guard: userId in the route must match the authenticated user's id
+  if (userId !== session.user.id) {
+    return (
+      <div className="max-w-2xl max-md:max-w-xl h-40 text-center">
+        <h1 className="text-xl font-semibold">Forbidden</h1>
+        <p className="mt-2 text-gray-500">
+          You don&apos;t have permission to view these bookings.
+        </p>
+      </div>
+    );
+  }
 
-	let bookings: Booking_Event[] = [];
-	let totalPages = 0;
+  let bookings: Booking_Event[] = [];
+  let totalPages = 0;
 
-	try {
-		const result = await axios.get(`${BASE_URL}/api/userBookings/`, {
-			params: { email: session.user.email, page, sort },
-			timeout: 10000, // 10 second timeout
-		});
-		// Basic response shape validation
-		if (
-			!result ||
-			!result.data ||
-			!Array.isArray(result.data.bookings) ||
-			typeof result.data.totalPages !== "number"
-		) {
-			throw new Error("Invalid response shape from userBookings API");
-		}
+  try {
+    const result = await axios.get(`${BASE_URL}/api/userBookings/`, {
+      params: { email: session.user.email, page, sort },
+      timeout: 10000, // 10 second timeout
+    });
+    // Basic response shape validation
+    if (
+      !result ||
+      !result.data ||
+      !Array.isArray(result.data.bookings) ||
+      typeof result.data.totalPages !== "number"
+    ) {
+      throw new Error("Invalid response shape from userBookings API");
+    }
 
-		bookings = result.data.bookings;
-		// const foundBookings = result.data.found;
-		totalPages = result.data.totalPages;
-	} catch (err) {
-		// Log only in development
-		if (process.env.NODE_ENV === "development") {
-			console.error("Failed to load bookings:", err);
-		}
+    bookings = result.data.bookings;
+    // const foundBookings = result.data.found;
+    totalPages = result.data.totalPages;
+  } catch (err) {
+    // Log only in development
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to load bookings:", err);
+    }
 
-		return (
-			<>
-				<h1 className="text-xl font-semibold">Error</h1>
-				<p className="mt-2 text-gray-500">
-					Unable to load your bookings. Please try again later.
-				</p>
-			</>
-		);
-	}
+    return (
+      <>
+        <h1 className="text-xl font-semibold">Error</h1>
+        <p className="mt-2 text-gray-500">
+          Unable to load your bookings. Please try again later.
+        </p>
+      </>
+    );
+  }
 
-	return (
-		<div className="text-center">
-			<h1 className="h-[72px]">Your Bookings</h1>
-			<BookingFilters searchParams={{ page: pageNumber, sort }} />
-			{bookings.length > 0 ? (
-				<ul className="list-none mx-auto max-w-xl mt-5 pb-2">
-					{bookings.map((book: Booking_Event) => (
-						<li key={book?._id} className="move">
-							<BookingSlice {...book} />
-						</li>
-					))}
-				</ul>
-			) : (
-				<div className="mt-6 text-gray-500">You have no bookings yet.</div>
-			)}
-			{totalPages > 1 && <Pagination totalPages={totalPages} />}
-		</div>
-	);
+  return (
+    <div className="text-center">
+      <h1 className="h-[72px]">Your Bookings</h1>
+      <BookingFilters searchParams={{ page: pageNumber, sort }} />
+      {bookings.length > 0 ? (
+        <ul className="list-none mx-auto max-w-xl mt-5 pb-2">
+          {bookings.map((book: Booking_Event) => (
+            <li key={book?._id} className="move">
+              <BookingSlice {...book} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="mt-6 text-gray-500">You have no bookings yet.</div>
+      )}
+      {totalPages > 1 && <Pagination totalPages={totalPages} />}
+    </div>
+  );
 };
 
 export default Bookings;

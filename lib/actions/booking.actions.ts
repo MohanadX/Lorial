@@ -1,6 +1,6 @@
 "use server";
 
-import { Booking, BookingModel } from "@/database";
+import { Booking } from "@/database";
 import connectToDatabase from "../mongodb";
 import nodemailer from "nodemailer";
 import z from "zod";
@@ -17,50 +17,50 @@ import z from "zod";
  */
 
 const emailSchema = z.object({
-	email: z.email(),
+  email: z.email(),
 });
 export async function createBooking({
-	eventId,
-	slug,
-	email,
+  eventId,
+  slug,
+  email,
 }: {
-	eventId: string;
-	slug: string;
-	email: string;
+  eventId: string;
+  slug: string;
+  email: string;
 }) {
-	try {
-		await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-		const validation = emailSchema.safeParse({
-			email,
-		});
+    const validation = emailSchema.safeParse({
+      email,
+    });
 
-		if (!validation.success) {
-			return { success: false, error: "Please enter a valid email address" };
-		}
-		// Check for duplicate booking
-		const existingBooking = await Booking.findOne({ eventId, email });
-		if (existingBooking) {
-			return { success: false, error: "You have already booked this event" };
-		}
+    if (!validation.success) {
+      return { success: false, error: "Please enter a valid email address" };
+    }
+    // Check for duplicate booking
+    const existingBooking = await Booking.findOne({ eventId, email });
+    if (existingBooking) {
+      return { success: false, error: "You have already booked this event" };
+    }
 
-		await Booking.create({ eventId, slug, email });
+    await Booking.create({ eventId, slug, email });
 
-		// Convert Mongoose document to plain object
-		// const booking = bookingDoc.toObject();
+    // Convert Mongoose document to plain object
+    // const booking = bookingDoc.toObject();
 
-		// // Convert ObjectId and Date to strings
-		// const serializedBooking = {
-		// 	...booking,
-		// 	_id: booking._id.toString(),
-		// 	eventId: booking.eventId.toString(),
-		// };
+    // // Convert ObjectId and Date to strings
+    // const serializedBooking = {
+    // 	...booking,
+    // 	_id: booking._id.toString(),
+    // 	eventId: booking.eventId.toString(),
+    // };
 
-		return { success: true };
-	} catch (error) {
-		console.error("Creating book failed", error);
-		return { success: false };
-	}
+    return { success: true };
+  } catch (error) {
+    console.error("Creating book failed", error);
+    return { success: false };
+  }
 }
 
 /*
@@ -75,27 +75,27 @@ Next.js cannot send that to the browser; it only supports plain JSON-serializabl
 // sendBookingEmail.ts
 
 interface SendBookingEmailParams {
-	to: string;
-	event: {
-		title: string;
-		date: string;
-		time: string;
-		venue: string;
-		location: string;
-		image?: string;
-		slug: string;
-	};
+  to: string;
+  event: {
+    title: string;
+    date: string;
+    time: string;
+    venue: string;
+    location: string;
+    image?: string;
+    slug: string;
+  };
 }
 
 function escapeHtml(text: string): string {
-	const map: Record<string, string> = {
-		"&": "&amp;",
-		"<": "&lt;",
-		">": "&gt;",
-		'"': "&quot;",
-		"'": "&#039;",
-	};
-	return text.replace(/[&<>"']/g, (m) => map[m]);
+  const map: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
 /**
@@ -103,40 +103,40 @@ function escapeHtml(text: string): string {
  * Using encodeURIComponent prevents injection via the slug.
  */
 function buildEventUrl(slug: string) {
-	const base = process.env.BASE_URL || "https://lorial.vercel.app"; // <- change site uses another base
-	const safeSlug = encodeURIComponent(slug || "");
-	return `${base}/event/${safeSlug}`;
+  const base = process.env.BASE_URL || "https://lorial.vercel.app"; // <- change site uses another base
+  const safeSlug = encodeURIComponent(slug || "");
+  return `${base}/event/${safeSlug}`;
 }
 
 // Configure your SMTP transporter
 const transporter = nodemailer.createTransport({
-	service: "gmail", // or "hotmail", "yahoo", etc.
-	auth: {
-		user: process.env.EMAIL_USER, // your email address
-		pass: process.env.EMAIL_PASS, // app password (Gmail)
-	},
+  service: "gmail", // or "hotmail", "yahoo", etc.
+  auth: {
+    user: process.env.EMAIL_USER, // your email address
+    pass: process.env.EMAIL_PASS, // app password (Gmail)
+  },
 });
 
 export default async function sendBookingEmail({
-	to,
-	event,
+  to,
+  event,
 }: SendBookingEmailParams) {
-	const subject = `Your booking for ${escapeHtml(event.title)}`;
-	const formattedDate = event.date;
+  const subject = `Your booking for ${escapeHtml(event.title)}`;
+  const formattedDate = event.date;
 
-	// build safe URL and escape for HTML attribute (href)
-	const eventUrl = buildEventUrl(event.slug);
-	const escapedUrl = escapeHtml(eventUrl);
-	const body = `
+  // build safe URL and escape for HTML attribute (href)
+  const eventUrl = buildEventUrl(event.slug);
+  const escapedUrl = escapeHtml(eventUrl);
+  const body = `
 		<h1>From Lorial app</h1>
 		<h2>You're booked for <strong>${escapeHtml(event.title)}</strong>!</h2>
 		${
-			event.image
-				? `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(
-						event.title
-				  )}" style="max-width:100%;height:auto;margin-bottom:16px;" />`
-				: ""
-		}
+      event.image
+        ? `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(
+            event.title,
+          )}" style="max-width:100%;height:auto;margin-bottom:16px;" />`
+        : ""
+    }
 		<!-- CTA button -->
 			<p style="margin:18px 0;">
 				<a
@@ -151,24 +151,24 @@ export default async function sendBookingEmail({
     <p>📅 <strong>Date:</strong> ${escapeHtml(formattedDate)}</p>
     <p>🕒 <strong>Time:</strong> ${escapeHtml(event.time)}</p>
     <p>📍 <strong>Venue:</strong> ${escapeHtml(event.venue)} (${escapeHtml(
-		event.location
-	)})</p>
+      event.location,
+    )})</p>
     <hr/>
     <p>We look forward to seeing you!</p>
 	
 `;
 
-	try {
-		const info = await transporter.sendMail({
-			from: process.env.EMAIL_USER, // must match your SMTP user
-			to,
-			subject,
-			html: body,
-		});
-		console.log("Email sent successfully:", info.messageId);
-	} catch (error) {
-		console.error("Failed to send booking email", error);
-	}
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER, // must match your SMTP user
+      to,
+      subject,
+      html: body,
+    });
+    console.log("Email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Failed to send booking email", error);
+  }
 }
 
 /*
