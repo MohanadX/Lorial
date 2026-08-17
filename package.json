@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "analyze": "npx next experimental-analyze"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -19,14 +20,14 @@
     "imagekit": "^6.0.0",
     "lucide-react": "^0.552.0",
     "mongoose": "^8.19.2",
-    "next": "16.0.10",
+    "next": "^16.3.1",
     "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^7.0.10",
     "ogl": "^1.0.11",
     "posthog-js": "^1.284.0",
     "posthog-node": "^5.11.2",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-icons": "^5.5.0",
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",

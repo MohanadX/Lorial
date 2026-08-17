@@ -54,6 +54,7 @@ const nextConfig: NextConfig = {
 
   // ─── Caching ─────────────────────────────────────────────────────────────
   cacheComponents: true,
+  partialPrefetching: true,
 
   // ─── Routing ─────────────────────────────────────────────────────────────
   skipTrailingSlashRedirect: true,

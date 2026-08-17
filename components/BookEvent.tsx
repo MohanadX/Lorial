@@ -1,9 +1,8 @@
 "use client";
 
 import { createBooking } from "@/lib/actions/booking.actions";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import posthog from "posthog-js";
 import { useState } from "react";
 
 // Memoized toast loader to avoid repeated imports
@@ -29,6 +28,7 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
 
     try {
       const toastPr = getToast();
+      const posthogPr = import("posthog-js");
       const { success, error } = await createBooking({
         eventId,
         slug,
@@ -36,6 +36,7 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
       });
 
       const toast = await toastPr;
+      const posthog = (await posthogPr).default;
 
       if (success) {
         setSubmitted(true);
@@ -78,8 +79,8 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
             )}
             <button
               type="submit"
-              className={clsx(
-                "button-submit",
+              className={cn(
+                "button-submit mt-2",
                 submitting ? "bg-primary/90" : "",
               )}
               disabled={submitting}>

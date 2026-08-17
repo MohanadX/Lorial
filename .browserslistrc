@@ -1,0 +1,10 @@
+# Target modern browsers with baseline Safari 15+ support
+Chrome >= 100
+Firefox >= 100
+Safari >= 15.4
+Edge >= 100
+iOS >= 15.4
+
+# Exclude dead/unsupported browsers
+not dead
+not IE 11
