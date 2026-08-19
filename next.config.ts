@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
   // ─── Experimental ────────────────────────────────────────────────────────
   experimental: {
     typedEnv: true,
-    optimizeCss: true, // defer non-critical css styles (detect them first auto)
     optimizePackageImports: [
       "lucide-react",
       "@heroicons/react",
